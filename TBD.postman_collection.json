@@ -33,6 +33,17 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"console.log(\"Started sleeping\");\r",
+							"setTimeout(function(){}, [30000]);\r",
+							"console.log(\"stopped sleeping\");"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"protocolProfileBehavior": {
