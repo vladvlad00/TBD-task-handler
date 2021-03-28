@@ -28,3 +28,6 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots verify
+
+      - name: Deploy to Heroku
+        run: HEROKU_API_KEY="a4236a83-5c16-4224-b0c0-00dc92dc6322" mvn clean heroku:deploy
