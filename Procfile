@@ -1,1 +1,0 @@
-web: java $JAVA_OPTS -Dserver.port=$PORT -jar /home/runner/work/TBD/TBD/target/forex-service-0.0.1-SNAPSHOT.jar
