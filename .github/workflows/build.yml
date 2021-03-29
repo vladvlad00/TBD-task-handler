@@ -32,9 +32,9 @@ jobs:
       - name: Deploy to Heroku
         run: HEROKU_API_KEY=${{ secrets.HEROKU_API_KEY }} mvn clean heroku:deploy
         
-      - name: Newman Action
-        uses: matt-ball/newman-action@v0.2.4
-        with:
-          collection: TBD.postman_collection.json
-          environment: TBD.postman_environment.json
+      - name: Install Newman
+      - run: npm install newman
+      
+      - name: Run Newman tests
+      - run: newman run TBD.postman_collection.json -e TBD.postman_environment.json
         
