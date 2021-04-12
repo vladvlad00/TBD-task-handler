@@ -11,8 +11,7 @@ import java.net.URI;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path="/demo")
-
+@RequestMapping(path="/professor")
 public class ProfessorController
 {
     @Autowired
@@ -41,7 +40,7 @@ public class ProfessorController
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Professor> listProf(@PathVariable Integer id)
+    public ResponseEntity<Professor> listProfessor(@PathVariable Integer id)
     {
         Optional<Professor> foundProfessor = professorRepository.findById(id);
         if (foundProfessor.isEmpty())
@@ -50,7 +49,7 @@ public class ProfessorController
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Professor> updateUser(@RequestBody Professor professor, @PathVariable Integer id)
+    public ResponseEntity<Professor> updateProfessor(@RequestBody Professor professor, @PathVariable Integer id)
     {
         if (professor.getId() == null || !professor.getId().equals(id))
             return ResponseEntity.badRequest().build();
