@@ -1,9 +1,7 @@
 package ro.uaic.info.taskhandler.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 public class Question
@@ -19,6 +17,9 @@ public class Question
     private Integer maxPoints;
 
     private String questionType;
+
+    @ManyToMany(mappedBy = "taskQuestions")
+    Set<Task> questionTasks;
 
     public String getQuestionType() {
         return questionType;

@@ -1,31 +1,33 @@
 package ro.uaic.info.taskhandler.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Set;
 
 @Entity
-public class Professor {
+public class Professor
+{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    private  Integer id;
 
-    private  Integer Id;
-    private String Name;
+    private String name;
+
+    @ManyToMany(mappedBy = "taskProfessors")
+    Set<Task> professorTasks;
 
     public void setId(Integer id) {
-        Id = id;
+        this.id = id;
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 
     public Integer getId() {
-        return Id;
+        return id;
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 }
