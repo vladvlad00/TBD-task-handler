@@ -1,5 +1,7 @@
 package ro.uaic.info.taskhandler.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -18,6 +20,7 @@ public class Question
 
     private String questionType;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "taskQuestions")
     Set<Task> questionTasks;
 
@@ -65,5 +68,15 @@ public class Question
     public void setCorrectAnswer(String correctAnswer)
     {
         this.correctAnswer = correctAnswer;
+    }
+
+    public Set<Task> getQuestionTasks()
+    {
+        return questionTasks;
+    }
+
+    public void setQuestionTasks(Set<Task> questionTasks)
+    {
+        this.questionTasks = questionTasks;
     }
 }

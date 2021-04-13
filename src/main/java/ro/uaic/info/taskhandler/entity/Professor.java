@@ -1,5 +1,7 @@
 package ro.uaic.info.taskhandler.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -12,6 +14,7 @@ public class Professor
 
     private String name;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "taskProfessors")
     Set<Task> professorTasks;
 
@@ -29,5 +32,15 @@ public class Professor
 
     public String getName() {
         return name;
+    }
+
+    public Set<Task> getProfessorTasks()
+    {
+        return professorTasks;
+    }
+
+    public void setProfessorTasks(Set<Task> professorTasks)
+    {
+        this.professorTasks = professorTasks;
     }
 }
