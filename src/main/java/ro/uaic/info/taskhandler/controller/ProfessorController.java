@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -33,7 +34,7 @@ public class ProfessorController
     @GetMapping("/all")
     public ResponseEntity<Iterable<Professor>> listAllProfessors()
     {
-        Iterable<Professor> foundProfessors = professorRepository.findAll();
+        Iterable<Professor> foundProfessors =professorRepository.findAll();
         if (foundProfessors == null)
             return ResponseEntity.notFound().build();
         return ResponseEntity.ok(foundProfessors);

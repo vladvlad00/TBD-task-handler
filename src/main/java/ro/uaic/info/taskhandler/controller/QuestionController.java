@@ -33,19 +33,19 @@ public class QuestionController
     @GetMapping("/all")
     public ResponseEntity<Iterable<Question>> listAllQuestions()
     {
-        Iterable<Question> foundquestions = questionRepository.findAll();
-        if (foundquestions == null)
+        Iterable<Question> foundQuestions = questionRepository.findAll();
+        if (foundQuestions == null)
             return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(foundquestions);
+        return ResponseEntity.ok(foundQuestions);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Question> listQuestion(@PathVariable Integer id)
     {
-        Optional<Question> foundquestion = questionRepository.findById(id);
-        if (foundquestion.isEmpty())
+        Optional<Question> foundQuestion = questionRepository.findById(id);
+        if (foundQuestion.isEmpty())
             return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(foundquestion.get());
+        return ResponseEntity.ok(foundQuestion.get());
     }
 
     @PutMapping("/{id}")
