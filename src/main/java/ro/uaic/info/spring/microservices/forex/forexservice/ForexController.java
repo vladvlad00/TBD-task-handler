@@ -16,4 +16,10 @@ public class ForexController
     {
         return repository.findByFromAndTo(from, to);
     }
+
+    @GetMapping("/")
+    public String homePage()
+    {
+        return "Salut";
+    }
 }
