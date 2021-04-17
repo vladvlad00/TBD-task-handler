@@ -10,8 +10,6 @@ import ro.uaic.info.taskhandler.repository.ProfessorRepository;
 import ro.uaic.info.taskhandler.repository.TaskRepository;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -74,9 +72,15 @@ public class TaskProfessorsController
         return ResponseEntity.ok(foundTask.get().getTaskProfessors());
     }
 
-    @DeleteMapping("/{professorId}/{taskId}")
-    public ResponseEntity<Task> deleteTask(@PathVariable Integer professorId, @PathVariable Integer taskId)
+    @DeleteMapping("/")
+    public ResponseEntity<Task> deleteTask(@RequestBody Map<String, Integer> taskProfessor)
     {
+        Integer professorId = taskProfessor.get("professorId");
+        Integer taskId = taskProfessor.get("taskId");
+
+        if (taskId == null || professorId == null)
+            return ResponseEntity.badRequest().build();
+
         Optional<Task> taskOpt = taskRepository.findById(taskId);
         Optional<Professor> professorOpt =  professorRepository.findById(professorId);
 
