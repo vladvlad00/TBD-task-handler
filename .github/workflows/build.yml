@@ -31,10 +31,11 @@ jobs:
 
       - name: Deploy to Heroku
         run: HEROKU_API_KEY=${{ secrets.HEROKU_API_KEY }} mvn clean heroku:deploy
-        
-      - name: Install Newman
-        run: npm install newman
+       
+      # de decomentat cand refacem integration testele
+      #- name: Install Newman
+      #  run: npm install newman
       
-      - name: Run Newman tests
-        run: newman run TBD.postman_collection.json -e TBD.postman_environment.json
+      #- name: Run Newman tests
+      #  run: newman run TBD.postman_collection.json -e TBD.postman_environment.json
         
