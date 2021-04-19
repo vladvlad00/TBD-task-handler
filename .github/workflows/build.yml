@@ -28,9 +28,17 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots verify
+        env:
+          TDB_DEV_DB_HOST: ${{ secrets.TBD_DEV_DB_HOST }}
+          TBD_DEV_DB_USER: ${{ secrets.TBD_DEV_DB_USER }}
+          TBD_DEV_DB_PASS: ${{ secrets.TBD_DEV_DB_PASS }}
 
       - name: Deploy to Heroku
         run: HEROKU_API_KEY=${{ secrets.HEROKU_API_KEY }} mvn clean heroku:deploy
+        env:
+          TDB_DEV_DB_HOST: ${{ secrets.TBD_DEV_DB_HOST }}
+          TBD_DEV_DB_USER: ${{ secrets.TBD_DEV_DB_USER }}
+          TBD_DEV_DB_PASS: ${{ secrets.TBD_DEV_DB_PASS }}
        
       # de decomentat cand refacem integration testele
       #- name: Install Newman
