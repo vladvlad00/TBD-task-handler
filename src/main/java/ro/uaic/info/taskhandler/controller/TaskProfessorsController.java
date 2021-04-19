@@ -102,4 +102,3 @@ public class TaskProfessorsController
         return ResponseEntity.noContent().build();
     }
 }
-

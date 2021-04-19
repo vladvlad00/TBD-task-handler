@@ -213,34 +213,83 @@ class TaskProfessorsControllerTest {
     @Test
     void DeleteTaskProfessor_BadRequest1() throws Exception {                           //taskOpt.isEmpty() == True
 
-        Professor professor = new Professor();
-        professor.setName("professor");
-        professor.setId(0);
+        Map<String,Integer> map = new HashMap<>();
+        map.put("professorId",null);
+        map.put("taskId",0);
 
-        when(taskRepository.findById(any(Integer.class))).thenReturn(Optional.empty());
-        when(professorRepository.findById(any(Integer.class))).thenReturn(Optional.of(professor));
-
-        mockMvc.perform(delete("/task_professor/0/0")
-                .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(delete("/task_professor/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(map)))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void DeleteTaskProfessor_BadRequest2() throws Exception{                             //professorOpt.isEmpty() == True
+        Map<String,Integer> map = new HashMap<>();
+        map.put("professorId",0);
+        map.put("taskId",null);
+
+        mockMvc.perform(delete("/task_professor/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(map)))
+                .andExpect(status().isBadRequest());
+    }
+
+    //////////////////////////// DO BAD REQUEST 3,4
+
+    @Test
+    void DeleteTaskProfessor_BadRequest3() throws Exception{
+        Map<String,Integer> map = new HashMap<>();
+        map.put("professorId",0);
+        map.put("taskId",0);
+
         Task task = new Task();
         task.setName("task");
         task.setId(0);
+
+        Professor professor = new Professor();
+        professor.setName("professor");
+        professor.setId(0);
 
         when(professorRepository.findById(any(Integer.class))).thenReturn(Optional.empty());
         when(taskRepository.findById(any(Integer.class))).thenReturn(Optional.of(task));
 
-        mockMvc.perform(delete("/task_professor/0/0")
-                .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(delete("/task_professor/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(map)))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    void DeleteTaskProfessor_BadRequest3() throws Exception{                //task.getTaskProfessors().contains(professor) == False
+    void DeleteTaskProfessor_BadRequest4() throws Exception{
+        Map<String,Integer> map = new HashMap<>();
+        map.put("professorId",0);
+        map.put("taskId",0);
+
+        Task task = new Task();
+        task.setName("task");
+        task.setId(0);
+
+        Professor professor = new Professor();
+        professor.setName("professor");
+        professor.setId(0);
+
+        when(professorRepository.findById(any(Integer.class))).thenReturn(Optional.of(professor));
+        when(taskRepository.findById(any(Integer.class))).thenReturn(Optional.empty());
+
+        mockMvc.perform(delete("/task_professor/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(map)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void DeleteTaskProfessor_BadRequest5() throws Exception{                //task.getTaskProfessors().contains(professor) == False
+
+        Map<String,Integer> map = new HashMap<>();
+        map.put("professorId",0);
+        map.put("taskId",0);
+
         Task task = new Task();
         task.setName("task");
         task.setId(0);
@@ -259,13 +308,19 @@ class TaskProfessorsControllerTest {
         when(professorRepository.findById(any(Integer.class))).thenReturn(Optional.of(professor));
         when(taskRepository.findById(any(Integer.class))).thenReturn(Optional.of(task));
 
-        mockMvc.perform(delete("/task_professor/0/0")
-                .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(delete("/task_professor/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(map)))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    void DeleteTaskProfessor_BadRequest4() throws Exception{                //professor.getProfessorTasks().contains(task) == False
+    void DeleteTaskProfessor_BadRequest6() throws Exception{                //professor.getProfessorTasks().contains(task) == False
+
+        Map<String,Integer> map = new HashMap<>();
+        map.put("professorId",0);
+        map.put("taskId",0);
+
         Task task = new Task();
         task.setName("task");
         task.setId(0);
@@ -284,13 +339,21 @@ class TaskProfessorsControllerTest {
         when(professorRepository.findById(any(Integer.class))).thenReturn(Optional.of(professor));
         when(taskRepository.findById(any(Integer.class))).thenReturn(Optional.of(task));
 
-        mockMvc.perform(delete("/task_professor/0/0")
-                .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(delete("/task_professor/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(map)))
                 .andExpect(status().isNotFound());
     }
+
+    ///////////////////// DO DELETE VALID
 
     @Test
     void DeleteTaskProfessor_Valid() throws Exception{
+
+        Map<String,Integer> map = new HashMap<>();
+        map.put("professorId",0);
+        map.put("taskId",0);
+
         Task task = new Task();
         task.setName("task");
         task.setId(0);
@@ -310,8 +373,9 @@ class TaskProfessorsControllerTest {
         when(professorRepository.findById(any(Integer.class))).thenReturn(Optional.of(professor));
         when(taskRepository.findById(any(Integer.class))).thenReturn(Optional.of(task));
 
-        mockMvc.perform(delete("/task_professor/0/0")
-                .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(delete("/task_professor/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(map)))
                 .andExpect(status().isNoContent());
     }
 }
