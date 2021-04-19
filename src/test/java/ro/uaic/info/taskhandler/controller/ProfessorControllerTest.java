@@ -150,7 +150,7 @@ class ProfessorControllerTest {
         mockMvc.perform(put("/professor/0")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(testInvalidProfessor1)))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
         ///////////////////////////////////////////////////////////////////// case 1 of bad request - testInvalidProfessor1.id == null /////////////////////////////////////////////////////////////////////
 
     }
