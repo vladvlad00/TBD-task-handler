@@ -150,7 +150,7 @@ class ProfessorControllerTest {
         mockMvc.perform(put("/professor/0")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(testInvalidProfessor1)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
         ///////////////////////////////////////////////////////////////////// case 1 of bad request - testInvalidProfessor1.id == null /////////////////////////////////////////////////////////////////////
 
     }
@@ -173,10 +173,12 @@ class ProfessorControllerTest {
     @Test
     void updateProfessor_NotFound() throws Exception {
         when(professorRepository.findById(any(Integer.class))).thenReturn(Optional.empty());
+
         Professor testInvalidProfessor3 = new Professor();
         testInvalidProfessor3.setId(0);
         testInvalidProfessor3.setProfessorTasks(null);
         testInvalidProfessor3.setName("testInvalidProfessor3");
+
         mockMvc.perform(put("/professor/0")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(testInvalidProfessor3)))
