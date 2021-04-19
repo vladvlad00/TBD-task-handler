@@ -54,6 +54,7 @@ public class ProfessorController
     {
         if (professor.getId() == null || !professor.getId().equals(id))
             return ResponseEntity.badRequest().build();
+
         if (professorRepository.findById(id).isEmpty())
             return ResponseEntity.notFound().build();
 
