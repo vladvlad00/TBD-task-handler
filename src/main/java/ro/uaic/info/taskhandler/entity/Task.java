@@ -23,8 +23,8 @@ public class Task
     @ManyToMany
     @JoinTable(
             name = "professorTasks",
-            joinColumns = @JoinColumn(name = "professorId"),
-            inverseJoinColumns = @JoinColumn(name = "taskId")
+            joinColumns = @JoinColumn(name = "taskId"),
+            inverseJoinColumns = @JoinColumn(name = "professorId")
     )
     Set<Professor> taskProfessors;
 
@@ -32,10 +32,10 @@ public class Task
     @ManyToMany
     @JoinTable(
             name = "taskQuestions",
-            joinColumns = @JoinColumn(name = "questionId"),
-            inverseJoinColumns = @JoinColumn(name = "taskId")
+            joinColumns = @JoinColumn(name = "taskId"),
+            inverseJoinColumns = @JoinColumn(name = "questionId")
     )
-    Set<Professor> taskQuestions;
+    Set<Question> taskQuestions;
 
     public Integer getId()
     {
@@ -87,12 +87,12 @@ public class Task
         this.taskProfessors = taskProfessors;
     }
 
-    public Set<Professor> getTaskQuestions()
+    public Set<Question> getTaskQuestions()
     {
         return taskQuestions;
     }
 
-    public void setTaskQuestions(Set<Professor> taskQuestions)
+    public void setTaskQuestions(Set<Question> taskQuestions)
     {
         this.taskQuestions = taskQuestions;
     }
