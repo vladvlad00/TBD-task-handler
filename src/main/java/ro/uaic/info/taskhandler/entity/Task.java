@@ -37,6 +37,15 @@ public class Task
     )
     Set<Question> taskQuestions;
 
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+            name = "taskStudents",
+            joinColumns = @JoinColumn(name = "taskId"),
+            inverseJoinColumns = @JoinColumn(name = "studentId")
+    )
+    Set<Student> taskStudents;
+
     public Integer getId()
     {
         return id;
@@ -96,4 +105,8 @@ public class Task
     {
         this.taskQuestions = taskQuestions;
     }
+
+    public Set<Student> getTaskStudents(){ return taskStudents;}
+
+    public void setTaskStudents(Set<Student> taskStudents){this.taskStudents=taskStudents;}
 }

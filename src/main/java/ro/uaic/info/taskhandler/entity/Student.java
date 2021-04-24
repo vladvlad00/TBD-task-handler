@@ -1,4 +1,6 @@
 package ro.uaic.info.taskhandler.entity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -10,6 +12,10 @@ public class Student {
     private  Integer id;
 
     private String name;
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "taskStudents")
+    Set<Task> studentTasks;
 
     public Integer getId() {
         return id;
@@ -26,4 +32,8 @@ public class Student {
     public void setName(String name) {
         this.name = name;
     }
+
+    public Set<Task> getStudentTasks(){return studentTasks;}
+
+    public void setStudentTasks(Set<Task> studentTasks){this.studentTasks=studentTasks;}
 }
