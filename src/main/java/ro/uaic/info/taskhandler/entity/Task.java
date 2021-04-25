@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -45,6 +46,20 @@ public class Task
             inverseJoinColumns = @JoinColumn(name = "studentId")
     )
     Set<Student> taskStudents;
+
+    public List<Answer> getAnswers()
+    {
+        return answers;
+    }
+
+    public void setAnswers(List<Answer> answers)
+    {
+        this.answers = answers;
+    }
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "task")
+    private List<Answer> answers;
 
     public Integer getId()
     {
