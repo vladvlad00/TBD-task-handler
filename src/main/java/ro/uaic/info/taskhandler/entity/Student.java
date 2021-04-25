@@ -15,8 +15,8 @@ public class Student {
     private String name;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "taskStudents")
-    Set<Task> studentTasks;
+    @OneToMany(mappedBy = "student")
+    Set<TaskRegistration> studentTasks;
 
     public List<Answer> getAnswers()
     {
@@ -48,7 +48,7 @@ public class Student {
         this.name = name;
     }
 
-    public Set<Task> getStudentTasks(){return studentTasks;}
+    public Set<TaskRegistration> getStudentTasks(){return studentTasks;}
 
-    public void setStudentTasks(Set<Task> studentTasks){this.studentTasks=studentTasks;}
+    public void setStudentTasks(Set<TaskRegistration> studentTasks){this.studentTasks=studentTasks;}
 }
