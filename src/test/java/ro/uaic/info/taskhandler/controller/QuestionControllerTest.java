@@ -75,6 +75,59 @@ class QuestionControllerTest {
                 .andExpect(jsonPath("$.content").value(testValidQuestion.getContent()));
         ///////////////////////////////////////////////////////////////////// case in which we successfully create a question /////////////////////////////////////////////////////////////////////
     }
+    
+    @Test
+    void createQuestions_BadRequest() throws Exception {
+        List<Question> testInvalidQuestions = new ArrayList<>();
+        Question testInvalidQuestionsInstance;
+
+        testInvalidQuestionsInstance = new Question();
+        testInvalidQuestionsInstance.setQuestionTasks(null);
+        testInvalidQuestionsInstance.setContent(new String("testQuestion"));
+        testInvalidQuestionsInstance.setId(null);
+        testInvalidQuestions.add(testInvalidQuestionsInstance);
+
+        testInvalidQuestionsInstance = new Question();
+        testInvalidQuestionsInstance.setQuestionTasks(null);
+        testInvalidQuestionsInstance.setContent("testInvalidQuestion");
+        testInvalidQuestionsInstance.setId(1);
+        testInvalidQuestions.add(testInvalidQuestionsInstance);
+
+        when(questionRepository.findById(any(Integer.class))).thenReturn(java.util.Optional.of(testInvalidQuestionsInstance));
+
+        mockMvc.perform(post("/question/bulk/")
+                .contentType(mapper.writeValueAsString(testInvalidQuestions))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+        ///////////////////////////////////////////////////////////////////// bad request case - testInvalidQuestionsInstance.get().id != null && and question already exists /////////////////////////////////////////////////////////////////////
+    }
+
+    @Test
+    void createQuestions_Valid() throws Exception {
+        List<Question> testValidQuestions = new ArrayList<>();
+        Question testValidQuestionsInstance;
+
+        /*testValidQuestionsInstance = new Question();
+        testValidQuestionsInstance.setQuestionTasks(null);
+        testValidQuestionsInstance.setContent(new String("testQuestion1"));
+        testValidQuestionsInstance.setId(null);
+        testValidQuestions.add(testValidQuestionsInstance);*/
+
+        testValidQuestionsInstance = new Question();
+        testValidQuestionsInstance.setQuestionTasks(null);
+        testValidQuestionsInstance.setContent(new String("testQuestion2"));
+        testValidQuestionsInstance.setId(null);
+        testValidQuestions.add(testValidQuestionsInstance);
+
+        when(questionRepository.save(any(Question.class))).thenReturn(testValidQuestionsInstance);
+        mockMvc.perform(post("/question/bulk/")
+                .content(mapper.writeValueAsString(testValidQuestions))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].body.content").value(testValidQuestions.get(0).getContent()))
+                /*.andExpect(jsonPath("$[1].body.content").value(testValidQuestions.get(1).getContent()))*/;
+        ///////////////////////////////////////////////////////////////////// case in which we successfully create questions /////////////////////////////////////////////////////////////////////
+    }
 
     @Test
     void listAllQuestions_NotFound() throws Exception {
