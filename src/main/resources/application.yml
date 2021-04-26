@@ -1,0 +1,27 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+  datasource:
+    url: ${TDB_DEV_DB_HOST}
+    username: ${TBD_DEV_DB_USER}
+    password: ${TBD_DEV_DB_PASS}
+    hikari:
+      maximum-pool-size: 3
+
+---
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URL}/eureka/
+
+---
+
+spring:
+  profiles: heroku
+eureka:
+  instance:
+    hostname: ${DOMAIN_NAME}
+    nonSecurePort: 80
