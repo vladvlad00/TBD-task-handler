@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ro.uaic.info.taskhandler.entity.Student;
-import ro.uaic.info.taskhandler.entity.Task;
-import ro.uaic.info.taskhandler.entity.TaskRegistration;
-import ro.uaic.info.taskhandler.entity.TaskRegistrationPK;
+import ro.uaic.info.taskhandler.entity.*;
 import ro.uaic.info.taskhandler.repository.StudentRepository;
 import ro.uaic.info.taskhandler.repository.TaskRegisterRepository;
 import ro.uaic.info.taskhandler.repository.TaskRepository;
@@ -111,6 +108,27 @@ public class TaskStudentController {
             return ResponseEntity.notFound().build();
         return ResponseEntity.ok(found.get());
     }
+
+    @PutMapping("/{taskId}/{studentId}")
+    public ResponseEntity<TaskRegistration> updateTask(@PathVariable Integer taskId,@PathVariable Integer studentId)
+    {
+
+        Optional<TaskRegistration> found=taskRegisterRepository.findByTaskIdAndStudentId(taskId,studentId);
+        if (found.isEmpty())
+            return ResponseEntity.notFound().build();
+
+        if(found.get().getStatus().equals("not started")){
+            found.get().setStatus("started");
+            TaskRegistration updatedTask= taskRegisterRepository.save(found.get());
+            if(updatedTask==null)
+                return ResponseEntity.notFound().build();
+            return ResponseEntity.ok(updatedTask);
+        }
+        else
+            return  ResponseEntity.badRequest().build();
+
+    }
+
 
     @DeleteMapping("/")
     public ResponseEntity<Task> deleteTask(@RequestBody Map<String, Integer> taskStudent)
