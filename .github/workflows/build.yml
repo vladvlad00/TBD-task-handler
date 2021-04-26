@@ -32,6 +32,8 @@ jobs:
           TDB_DEV_DB_HOST: ${{ secrets.TBD_DEV_DB_HOST }}
           TBD_DEV_DB_USER: ${{ secrets.TBD_DEV_DB_USER }}
           TBD_DEV_DB_PASS: ${{ secrets.TBD_DEV_DB_PASS }}
+          EUREKA_URL: ${{ secrets.EUREKA_URL }}
+          DOMAIN_NAME: ${{ secrets.DOMAIN_NAME }}
 
       - name: Deploy to Heroku
         run: HEROKU_API_KEY=${{ secrets.HEROKU_API_KEY }} mvn clean heroku:deploy
@@ -39,6 +41,8 @@ jobs:
           TDB_DEV_DB_HOST: ${{ secrets.TBD_DEV_DB_HOST }}
           TBD_DEV_DB_USER: ${{ secrets.TBD_DEV_DB_USER }}
           TBD_DEV_DB_PASS: ${{ secrets.TBD_DEV_DB_PASS }}
+          EUREKA_URL: ${{ secrets.EUREKA_URL }}
+          DOMAIN_NAME: ${{ secrets.DOMAIN_NAME }}
        
       # de decomentat cand refacem integration testele
       #- name: Install Newman
