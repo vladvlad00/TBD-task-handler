@@ -15,7 +15,7 @@ spring:
 eureka:
   client:
     serviceUrl:
-      defaultZone: ${EUREKA_URL}/eureka/
+      defaultZone: ${EUREKA_URL}/eureka
 
 ---
 
