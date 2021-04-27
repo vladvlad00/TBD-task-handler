@@ -8,6 +8,8 @@ import ro.uaic.info.taskhandler.entity.Question;
 import ro.uaic.info.taskhandler.repository.QuestionRepository;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -28,6 +30,27 @@ public class QuestionController
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}").buildAndExpand(createdQuestion.getId()).toUri();
         return ResponseEntity.created(uri).body(createdQuestion);
+    }
+
+    @PostMapping("/bulk")
+    public ResponseEntity<List<ResponseEntity<Question>>> createQuestion(@RequestBody Iterable<Question> questions)
+    {
+        for (var question : questions)
+        {
+            if (question.getId() != null && questionRepository.findById(question.getId()).isPresent())
+                return ResponseEntity.badRequest().build();
+        }
+
+        List<ResponseEntity<Question>> responses = new ArrayList<>();
+        for (var question : questions)
+        {
+            Question createdQuestion = questionRepository.save(question);
+
+            URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                    .path("/{id}").buildAndExpand(createdQuestion.getId()).toUri();
+            responses.add(ResponseEntity.created(uri).body(createdQuestion));
+        }
+        return ResponseEntity.ok().body(responses);
     }
 
     @GetMapping("/all")
