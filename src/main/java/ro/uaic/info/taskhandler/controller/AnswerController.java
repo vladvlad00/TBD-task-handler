@@ -114,7 +114,7 @@ public class AnswerController
         return ResponseEntity.ok(foundAnswers);
     }
 
-    @GetMapping("/task_question_student/{taskId}/{questionId}/{studentId/}")
+    @GetMapping("/task_question_student/{taskId}/{questionId}/{studentId}")
     public ResponseEntity<Answer> listAnswerByTaskQuestionStudentId(@PathVariable Integer taskId,
                                                                               @PathVariable Integer questionId,
                                                                               @PathVariable Integer studentId)
