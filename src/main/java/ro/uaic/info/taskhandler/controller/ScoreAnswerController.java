@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path="/scoreAnswer")
+@RequestMapping(path="/score_answer")
 public class ScoreAnswerController
 {
     @Autowired
