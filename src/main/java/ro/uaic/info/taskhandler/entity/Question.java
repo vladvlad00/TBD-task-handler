@@ -3,6 +3,7 @@ package ro.uaic.info.taskhandler.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -23,6 +24,20 @@ public class Question
     @JsonIgnore
     @ManyToMany(mappedBy = "taskQuestions")
     Set<Task> questionTasks;
+
+    public List<Answer> getAnswers()
+    {
+        return answers;
+    }
+
+    public void setAnswers(List<Answer> answers)
+    {
+        this.answers = answers;
+    }
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "question")
+    private List<Answer> answers;
 
     public String getQuestionType() {
         return questionType;

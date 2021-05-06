@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -40,13 +41,22 @@ public class Task
     Set<Question> taskQuestions;
 
     @JsonIgnore
-    @ManyToMany
-    @JoinTable(
-            name = "taskStudents",
-            joinColumns = @JoinColumn(name = "taskId"),
-            inverseJoinColumns = @JoinColumn(name = "studentId")
-    )
-    Set<Student> taskStudents;
+    @OneToMany(mappedBy = "task")
+    Set<TaskRegistration> taskStudents;
+
+    public List<Answer> getAnswers()
+    {
+        return answers;
+    }
+
+    public void setAnswers(List<Answer> answers)
+    {
+        this.answers = answers;
+    }
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "task")
+    private List<Answer> answers;
 
     public Integer getId()
     {
@@ -116,7 +126,7 @@ public class Task
         this.taskQuestions = taskQuestions;
     }
 
-    public Set<Student> getTaskStudents(){ return taskStudents;}
+    public Set<TaskRegistration> getTaskStudents(){ return taskStudents;}
 
-    public void setTaskStudents(Set<Student> taskStudents){this.taskStudents=taskStudents;}
+    public void setTaskStudents(Set<TaskRegistration> taskStudents){this.taskStudents=taskStudents;}
 }
