@@ -15,6 +15,8 @@ public class Task
 
     private String name;
 
+    private String subject;
+
     private LocalDateTime startTime;
 
     private LocalDateTime endTime;
@@ -64,6 +66,14 @@ public class Task
     public void setName(String name)
     {
         this.name = name;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 
     public LocalDateTime getStartTime()
