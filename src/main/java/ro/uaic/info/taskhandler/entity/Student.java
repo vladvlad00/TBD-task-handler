@@ -32,6 +32,14 @@ public class Student {
     @OneToMany(mappedBy = "student")
     private List<Answer> answers;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "student")
+    private List<ScoreAnswer> ScoreAnswers;
+
+    public List<ScoreAnswer> getScoreAnswers() { return ScoreAnswers; }
+
+    public void setScoreAnswers(List<ScoreAnswer> scoreAnswers) { ScoreAnswers = scoreAnswers; }
+
     public Integer getId() {
         return id;
     }

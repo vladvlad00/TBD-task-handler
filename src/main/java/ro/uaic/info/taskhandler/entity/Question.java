@@ -39,6 +39,14 @@ public class Question
     @OneToMany(mappedBy = "question")
     private List<Answer> answers;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "question")
+    private List<ScoreAnswer> scoreAnswers;
+
+    public List<ScoreAnswer> getScoreAnswers() { return scoreAnswers; }
+
+    public void setScoreAnswers(List<ScoreAnswer> scoreAnswers) { this.scoreAnswers = scoreAnswers; }
+
     public String getQuestionType() {
         return questionType;
     }
