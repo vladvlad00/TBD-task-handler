@@ -56,6 +56,18 @@ public class Task
     @OneToMany(mappedBy = "task")
     private List<Answer> answers;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "task")
+    private List<ScoreAnswer> scoreAnswers;
+
+    public List<ScoreAnswer> getScoreAnswers() {
+        return scoreAnswers;
+    }
+
+    public void setScoreAnswers(List<ScoreAnswer> scoreAnswers) {
+        this.scoreAnswers = scoreAnswers;
+    }
+
     public Integer getId()
     {
         return id;
