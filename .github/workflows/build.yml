@@ -3,12 +3,7 @@ name: Java CI
 on:
   push:
     branches:
-      - master
-      - development
-  pull_request:
-    branches:
-      - master
-      - development
+      - gateway
 
 jobs:
   build:
@@ -36,7 +31,7 @@ jobs:
           DOMAIN_NAME: ${{ secrets.DOMAIN_NAME }}
 
       - name: Deploy to Heroku
-        run: HEROKU_API_KEY=${{ secrets.HEROKU_API_KEY }} mvn clean heroku:deploy
+        run: HEROKU_API_KEY=${{ secrets.HEROKU_API_KEY }} mvn clean heroku:deploy -Dheroku.appName=tbd-dev-gateway
         env:
           TDB_DEV_DB_HOST: ${{ secrets.TBD_DEV_DB_HOST }}
           TBD_DEV_DB_USER: ${{ secrets.TBD_DEV_DB_USER }}
