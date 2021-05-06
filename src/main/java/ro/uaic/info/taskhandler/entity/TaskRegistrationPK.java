@@ -8,6 +8,15 @@ public class TaskRegistrationPK implements Serializable{
     private Integer studentId;
     private Integer taskId;
 
+    public TaskRegistrationPK(Integer studentId, Integer taskId) {
+        this.studentId = studentId;
+        this.taskId = taskId;
+    }
+
+    public TaskRegistrationPK(){
+
+    }
+
     public Integer getStudentId() {
         return studentId;
     }

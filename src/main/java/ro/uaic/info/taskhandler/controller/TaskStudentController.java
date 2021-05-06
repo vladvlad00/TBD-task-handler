@@ -139,24 +139,31 @@ public class TaskStudentController {
         if (taskId == null || studentId == null)
             return ResponseEntity.badRequest().build();
 
-        Optional<Task> taskOpt = taskRepository.findById(taskId);
-        Optional<Student> studentOpt =  studentRepository.findById(studentId);
+        Optional<TaskRegistration> taskRegistrationOpt = taskRegisterRepository.findById(new TaskRegistrationPK(studentId,taskId));
+
+        if (taskRegistrationOpt.isEmpty())
+            return ResponseEntity.badRequest().build();
+
+        Optional<Task> taskOpt=taskRepository.findById(taskId);
+        Optional<Student>studentOpt=studentRepository.findById(studentId);
 
         if (taskOpt.isEmpty() || studentOpt.isEmpty())
             return ResponseEntity.badRequest().build();
 
-        Task task = taskOpt.get();
-        Student student = studentOpt.get();
+        TaskRegistration taskRegistration=taskRegistrationOpt.get();
+        Task task=taskOpt.get();
+        Student student=studentOpt.get();
 
-        if (!task.getTaskStudents().contains(student) || !student.getStudentTasks().contains(task))
+        if (!task.getTaskStudents().contains(taskRegistration) || !student.getStudentTasks().contains(taskRegistration))
             return ResponseEntity.notFound().build();
 
-        task.getTaskStudents().remove(student);
-        student.getStudentTasks().remove(task);
-
+        task.getTaskStudents().remove(taskRegistration);
+        student.getStudentTasks().remove(taskRegistration);
 
         taskRepository.save(task);
         studentRepository.save(student);
+
+        taskRegisterRepository.deleteById(new TaskRegistrationPK(studentId,taskId));
 
         return ResponseEntity.noContent().build();
     }
