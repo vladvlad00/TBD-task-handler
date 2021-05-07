@@ -34,11 +34,11 @@ public class Student {
 
     @JsonIgnore
     @OneToMany(mappedBy = "student")
-    private List<ScoreAnswer> ScoreAnswers;
+    private List<ScoreAnswer> scoreAnswers;
 
-    public List<ScoreAnswer> getScoreAnswers() { return ScoreAnswers; }
+    public List<ScoreAnswer> getScoreAnswers() { return scoreAnswers; }
 
-    public void setScoreAnswers(List<ScoreAnswer> scoreAnswers) { ScoreAnswers = scoreAnswers; }
+    public void setScoreAnswers(List<ScoreAnswer> scoreAnswers) { this.scoreAnswers = scoreAnswers; }
 
     public Integer getId() {
         return id;
