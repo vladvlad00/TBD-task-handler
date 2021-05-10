@@ -23,6 +23,10 @@ spring:
   profiles: heroku
 eureka:
   instance:
-    hostname: ${DOMAIN_NAME}
+    preferIpAddress: true
+    lease-renewal-interval-in-seconds: 30
+    hostname: ${EUREKA_URL}
     nonSecurePort: 80
-    health-check-url: ${EUREKA_URL}/health
+    statusPageUrl: https://${eureka.hostname}/info
+    healthCheckUrl: https://${eureka.hostname}/health
+    homePageUrl: https://${eureka.hostname}/
