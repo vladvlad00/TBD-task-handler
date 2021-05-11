@@ -10,18 +10,10 @@ spring:
     hikari:
       maximum-pool-size: 3
 
----
-
 eureka:
   client:
     serviceUrl:
-      defaultZone: ${EUREKA_URL}/eureka
-
----
-
-spring:
-  profiles: heroku
-eureka:
+      defaultZone: https://${eureka.instance.hostname}/eureka
   instance:
     preferIpAddress: true
     lease-renewal-interval-in-seconds: 30
