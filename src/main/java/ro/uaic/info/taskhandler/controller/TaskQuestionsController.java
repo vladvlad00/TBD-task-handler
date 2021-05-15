@@ -72,11 +72,9 @@ public class TaskQuestionsController
         return ResponseEntity.ok(foundTask.get().getTaskQuestions());
     }
 
-    @DeleteMapping("/")
-    public ResponseEntity<Task> deleteTask(@RequestBody Map<String, Integer> taskQuestion)
+    @DeleteMapping("/task/{taskId}/question/{questionId}")
+    public ResponseEntity<Task> deleteTask(@PathVariable Integer taskId, @PathVariable Integer questionId)
     {
-        Integer questionId = taskQuestion.get("questionId");
-        Integer taskId = taskQuestion.get("taskId");
 
         if (taskId == null || questionId == null)
             return ResponseEntity.badRequest().build();

@@ -101,7 +101,7 @@ public class TaskStudentController {
         return ResponseEntity.ok(ans);
     }
 
-    @GetMapping("/{taskId}/{studentId}")
+    @GetMapping("/task/{taskId}/student/{studentId}")
     public ResponseEntity<TaskRegistration> listTaskAssignedToStudent(@PathVariable Integer taskId,@PathVariable Integer studentId){
         Optional<TaskRegistration> found=taskRegisterRepository.findByTaskIdAndStudentId(taskId,studentId);
         if (found.isEmpty())
@@ -109,7 +109,7 @@ public class TaskStudentController {
         return ResponseEntity.ok(found.get());
     }
 
-    @PutMapping("/{taskId}/{studentId}")
+    @PutMapping("/task/{taskId}/student/{studentId}")
     public ResponseEntity<TaskRegistration> updateTask(@PathVariable Integer taskId,@PathVariable Integer studentId)
     {
 
@@ -130,11 +130,9 @@ public class TaskStudentController {
     }
 
 
-    @DeleteMapping("/")
-    public ResponseEntity<Task> deleteTask(@RequestBody Map<String, Integer> taskStudent)
+    @DeleteMapping("/task/{taskId}/student/{studentId}")
+    public ResponseEntity<Task> deleteTask(@PathVariable Integer taskId,@PathVariable Integer studentId)
     {
-        Integer studentId = taskStudent.get("studentId");
-        Integer taskId = taskStudent.get("taskId");
 
         if (taskId == null || studentId == null)
             return ResponseEntity.badRequest().build();
