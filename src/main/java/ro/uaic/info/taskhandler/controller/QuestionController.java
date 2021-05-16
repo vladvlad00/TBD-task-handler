@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path="/question")
+@RequestMapping(path = "/question")
 public class QuestionController
 {
     @Autowired
@@ -57,8 +57,6 @@ public class QuestionController
     public ResponseEntity<Iterable<Question>> listAllQuestions()
     {
         Iterable<Question> foundQuestions = questionRepository.findAll();
-        if (foundQuestions == null)
-            return ResponseEntity.notFound().build();
         return ResponseEntity.ok(foundQuestions);
     }
 
@@ -80,9 +78,6 @@ public class QuestionController
             return ResponseEntity.notFound().build();
 
         Question updatedQuestion = questionRepository.save(question);
-
-        if (updatedQuestion == null)
-            return ResponseEntity.notFound().build();
 
         return ResponseEntity.ok(updatedQuestion);
     }

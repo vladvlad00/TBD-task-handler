@@ -34,8 +34,6 @@ public class TaskController
     public ResponseEntity<Iterable<Task>> listAllTasks()
     {
         Iterable<Task> foundTasks = taskRepository.findAll();
-        if (foundTasks == null)
-            return ResponseEntity.notFound().build();
         return ResponseEntity.ok(foundTasks);
     }
 
@@ -57,9 +55,6 @@ public class TaskController
             return ResponseEntity.notFound().build();
 
         Task updatedTask = taskRepository.save(task);
-
-        if (updatedTask == null)
-            return ResponseEntity.notFound().build();
 
         return ResponseEntity.ok(updatedTask);
     }

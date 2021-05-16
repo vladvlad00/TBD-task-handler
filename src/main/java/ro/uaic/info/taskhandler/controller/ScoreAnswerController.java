@@ -12,11 +12,12 @@ import ro.uaic.info.taskhandler.repository.StudentRepository;
 import ro.uaic.info.taskhandler.repository.TaskRepository;
 
 import java.net.URI;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path="/score_answer")
+@RequestMapping(path = "/score_answer")
 public class ScoreAnswerController
 {
     @Autowired
@@ -32,7 +33,7 @@ public class ScoreAnswerController
     private QuestionRepository questionRepository;
 
     @PostMapping("/")
-    public ResponseEntity<ScoreAnswer> createScoreAnswer(@RequestBody Map<String,String> scoreAnswer)
+    public ResponseEntity<ScoreAnswer> createScoreAnswer(@RequestBody Map<String, String> scoreAnswer)
     {
         Integer studentId;
         Integer questionId;
@@ -44,14 +45,10 @@ public class ScoreAnswerController
             questionId = Integer.parseInt(scoreAnswer.get("questionId"));
             taskId = Integer.parseInt(scoreAnswer.get("taskId"));
             scoreValue = Integer.parseInt(scoreAnswer.get("scoreValue"));
-        }
-        catch (Exception e)
+        } catch (Exception e)
         {
             return ResponseEntity.badRequest().build();
         }
-
-        if (studentId == null || questionId == null || taskId == null || scoreValue == null)
-            return ResponseEntity.badRequest().build();
 
         Optional<Student> studentOpt = studentRepository.findById(studentId);
         Optional<Question> questionOpt = questionRepository.findById(questionId);
@@ -64,20 +61,12 @@ public class ScoreAnswerController
         Question question = questionOpt.get();
         Task task = taskOpt.get();
 
-        ScoreAnswerPK id = new ScoreAnswerPK();
-        id.setQuestionId(questionId);
-        id.setStudentId(studentId);
-        id.setTaskId(taskId);
+        ScoreAnswerPK id = new ScoreAnswerPK(studentId, taskId, questionId);
 
         if (scoreAnswerRepository.findById(id).isPresent())
             return ResponseEntity.badRequest().build();
 
-        ScoreAnswer scoreAnswerObj = new ScoreAnswer();
-        scoreAnswerObj.setId(id);
-        scoreAnswerObj.setStudent(student);
-        scoreAnswerObj.setQuestion(question);
-        scoreAnswerObj.setTask(task);
-        scoreAnswerObj.setScoreValue(scoreValue);
+        ScoreAnswer scoreAnswerObj = new ScoreAnswer(id, task, question, student, scoreValue);
 
         student.getScoreAnswers().add(scoreAnswerObj);
         question.getScoreAnswers().add(scoreAnswerObj);
@@ -86,7 +75,8 @@ public class ScoreAnswerController
         ScoreAnswer createdScoreAnswer = scoreAnswerRepository.save(scoreAnswerObj);
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}").buildAndExpand(createdScoreAnswer.getId()).toUri();
+                .path("/task/{taskId}/question/{questionId}/student/{studentId}")
+                .buildAndExpand(questionId, taskId, studentId).toUri();
         return ResponseEntity.created(uri).body(createdScoreAnswer);
     }
 
@@ -94,10 +84,7 @@ public class ScoreAnswerController
     public ResponseEntity<Iterable<ScoreAnswer>> listScoreAnswerByTaskStudentId(@PathVariable Integer taskId, @PathVariable Integer studentId)
     {
         Iterable<ScoreAnswer> foundScoreAnswers = scoreAnswerRepository.findByTaskStudentId(taskId, studentId);
-        int count = 0;
-        for (var scoreAnswer : foundScoreAnswers)
-            count++;
-        if (count == 0)
+        if (((Collection<?>) foundScoreAnswers).isEmpty())
             return ResponseEntity.notFound().build();
         return ResponseEntity.ok(foundScoreAnswers);
     }
@@ -106,10 +93,7 @@ public class ScoreAnswerController
     public ResponseEntity<Iterable<ScoreAnswer>> listScoreAnswerByTaskQuestionId(@PathVariable Integer taskId, @PathVariable Integer questionId)
     {
         Iterable<ScoreAnswer> foundScoreAnswers = scoreAnswerRepository.findByTaskQuestionId(taskId, questionId);
-        int count = 0;
-        for (var scoreAnswer : foundScoreAnswers)
-            count++;
-        if (count == 0)
+        if (((Collection<?>) foundScoreAnswers).isEmpty())
             return ResponseEntity.notFound().build();
         return ResponseEntity.ok(foundScoreAnswers);
     }
@@ -117,10 +101,7 @@ public class ScoreAnswerController
     @GetMapping("/task/{taskId}/question/{questionId}/student/{studentId}")
     public ResponseEntity<ScoreAnswer> listScoreAnswerByTaskQuestionStudentId(@PathVariable Integer taskId, @PathVariable Integer questionId, @PathVariable Integer studentId)
     {
-        var id = new ScoreAnswerPK();
-        id.setQuestionId(questionId);
-        id.setStudentId(studentId);
-        id.setTaskId(taskId);
+        var id = new ScoreAnswerPK(studentId, taskId, questionId);
         Optional<ScoreAnswer> foundScoreAnswer = scoreAnswerRepository.findById(id);
         if (foundScoreAnswer.isEmpty())
             return ResponseEntity.notFound().build();
@@ -128,8 +109,8 @@ public class ScoreAnswerController
     }
 
     @PutMapping("/task/{taskIdPath}/question/{questionIdPath}/student/{studentIdPath}")
-    public ResponseEntity<ScoreAnswer> updateScoreAnswer(@RequestBody Map<String,String> scoreAnswer, @PathVariable Integer studentIdPath,
-                                               @PathVariable Integer taskIdPath, @PathVariable Integer questionIdPath)
+    public ResponseEntity<ScoreAnswer> updateScoreAnswer(@RequestBody Map<String, String> scoreAnswer, @PathVariable Integer studentIdPath,
+                                                         @PathVariable Integer taskIdPath, @PathVariable Integer questionIdPath)
     {
         Integer studentId;
         Integer questionId;
@@ -141,20 +122,15 @@ public class ScoreAnswerController
             questionId = Integer.parseInt(scoreAnswer.get("questionId"));
             taskId = Integer.parseInt(scoreAnswer.get("taskId"));
             scoreValue = Integer.parseInt(scoreAnswer.get("scoreValue"));
-        }
-        catch (Exception e)
+        } catch (Exception e)
         {
             return ResponseEntity.badRequest().build();
         }
 
-        if (studentId == null || questionId == null || taskId == null || scoreValue == null ||
-                !studentId.equals(studentIdPath) || !questionId.equals(questionIdPath) || !taskId.equals(taskIdPath))
+        if (!studentId.equals(studentIdPath) || !questionId.equals(questionIdPath) || !taskId.equals(taskIdPath))
             return ResponseEntity.badRequest().build();
 
-        ScoreAnswerPK id = new ScoreAnswerPK();
-        id.setTaskId(taskId);
-        id.setStudentId(studentId);
-        id.setQuestionId(questionId);
+        ScoreAnswerPK id = new ScoreAnswerPK(studentId, taskId, questionId);
         Optional<ScoreAnswer> scoreAnswerOpt = scoreAnswerRepository.findById(id);
         if (scoreAnswerOpt.isEmpty())
             return ResponseEntity.notFound().build();
@@ -163,9 +139,6 @@ public class ScoreAnswerController
         scoreAnswerObj.setScoreValue(scoreValue);
 
         ScoreAnswer updatedScoreAnswer = scoreAnswerRepository.save(scoreAnswerObj);
-
-        if (updatedScoreAnswer == null)
-            return ResponseEntity.notFound().build();
 
         return ResponseEntity.ok(updatedScoreAnswer);
     }

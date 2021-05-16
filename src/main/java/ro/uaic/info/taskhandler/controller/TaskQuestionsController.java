@@ -33,7 +33,7 @@ public class TaskQuestionsController
             return ResponseEntity.badRequest().build();
 
         Optional<Task> taskOpt = taskRepository.findById(taskId);
-        Optional<Question> questionOpt =  questionRepository.findById(questionId);
+        Optional<Question> questionOpt = questionRepository.findById(questionId);
 
         if (taskOpt.isEmpty() || questionOpt.isEmpty())
             return ResponseEntity.badRequest().build();
@@ -75,12 +75,8 @@ public class TaskQuestionsController
     @DeleteMapping("/task/{taskId}/question/{questionId}")
     public ResponseEntity<Task> deleteTask(@PathVariable Integer taskId, @PathVariable Integer questionId)
     {
-
-        if (taskId == null || questionId == null)
-            return ResponseEntity.badRequest().build();
-
         Optional<Task> taskOpt = taskRepository.findById(taskId);
-        Optional<Question> questionOpt =  questionRepository.findById(questionId);
+        Optional<Question> questionOpt = questionRepository.findById(questionId);
 
         if (taskOpt.isEmpty() || questionOpt.isEmpty())
             return ResponseEntity.badRequest().build();

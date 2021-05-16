@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path="/professor")
+@RequestMapping(path = "/professor")
 public class ProfessorController
 {
     @Autowired
@@ -34,9 +34,7 @@ public class ProfessorController
     @GetMapping("/all")
     public ResponseEntity<Iterable<Professor>> listAllProfessors()
     {
-        Iterable<Professor> foundProfessors =professorRepository.findAll();
-        if (foundProfessors == null)
-            return ResponseEntity.notFound().build();
+        Iterable<Professor> foundProfessors = professorRepository.findAll();
         return ResponseEntity.ok(foundProfessors);
     }
 
@@ -59,9 +57,6 @@ public class ProfessorController
             return ResponseEntity.notFound().build();
 
         Professor updatedProfessor = professorRepository.save(professor);
-
-        if (updatedProfessor == null)
-            return ResponseEntity.notFound().build();
 
         return ResponseEntity.ok(updatedProfessor);
     }

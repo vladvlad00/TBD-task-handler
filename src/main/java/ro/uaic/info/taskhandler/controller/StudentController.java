@@ -35,8 +35,6 @@ public class StudentController
     public ResponseEntity<Iterable<Student>> listAllStudents()
     {
         Iterable<Student> foundStudents =studentRepository.findAll();
-        if (foundStudents == null)
-            return ResponseEntity.notFound().build();
         return ResponseEntity.ok(foundStudents);
     }
 
@@ -59,9 +57,6 @@ public class StudentController
             return ResponseEntity.notFound().build();
 
         Student updatedStudent = studentRepository.save(student);
-
-        if (updatedStudent == null)
-            return ResponseEntity.notFound().build();
 
         return ResponseEntity.ok(updatedStudent);
     }

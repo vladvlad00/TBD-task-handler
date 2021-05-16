@@ -33,7 +33,7 @@ public class TaskProfessorsController
             return ResponseEntity.badRequest().build();
 
         Optional<Task> taskOpt = taskRepository.findById(taskId);
-        Optional<Professor> professorOpt =  professorRepository.findById(professorId);
+        Optional<Professor> professorOpt = professorRepository.findById(professorId);
 
         if (taskOpt.isEmpty() || professorOpt.isEmpty())
             return ResponseEntity.badRequest().build();
@@ -75,12 +75,8 @@ public class TaskProfessorsController
     @DeleteMapping("/task/{taskId}/professor/{professorId}")
     public ResponseEntity<Task> deleteTask(@PathVariable Integer taskId, @PathVariable Integer professorId)
     {
-
-        if (taskId == null || professorId == null)
-            return ResponseEntity.badRequest().build();
-
         Optional<Task> taskOpt = taskRepository.findById(taskId);
-        Optional<Professor> professorOpt =  professorRepository.findById(professorId);
+        Optional<Professor> professorOpt = professorRepository.findById(professorId);
 
         if (taskOpt.isEmpty() || professorOpt.isEmpty())
             return ResponseEntity.badRequest().build();

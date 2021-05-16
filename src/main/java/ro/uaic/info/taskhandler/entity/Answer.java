@@ -29,6 +29,19 @@ public class Answer
 
     private String content;
 
+    public Answer()
+    {
+    }
+
+    public Answer(AnswerPK id, Task task, Question question, Student student, String content)
+    {
+        this.id = id;
+        this.task = task;
+        this.question = question;
+        this.student = student;
+        this.content = content;
+    }
+
     public AnswerPK getId()
     {
         return id;
