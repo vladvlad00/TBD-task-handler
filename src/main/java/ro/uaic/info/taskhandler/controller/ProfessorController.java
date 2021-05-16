@@ -64,8 +64,13 @@ public class ProfessorController
     @DeleteMapping("/{id}")
     public ResponseEntity<Professor> deleteProfessor(@PathVariable Integer id)
     {
-        if (professorRepository.findById(id).isEmpty())
+        var professorOpt = professorRepository.findById(id);
+        if (professorOpt.isEmpty())
             return ResponseEntity.notFound().build();
+
+        var professorObj = professorOpt.get();
+        for (var task : professorObj.getProfessorTasks())
+            task.getTaskProfessors().remove(professorObj);
 
         professorRepository.deleteById(id);
         return ResponseEntity.noContent().build();
