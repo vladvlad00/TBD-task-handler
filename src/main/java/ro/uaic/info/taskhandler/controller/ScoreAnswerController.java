@@ -90,7 +90,7 @@ public class ScoreAnswerController
         return ResponseEntity.created(uri).body(createdScoreAnswer);
     }
 
-    @GetMapping("/task_student/task/{taskId}/student/{studentId}")
+    @GetMapping("/task/{taskId}/student/{studentId}")
     public ResponseEntity<Iterable<ScoreAnswer>> listScoreAnswerByTaskStudentId(@PathVariable Integer taskId, @PathVariable Integer studentId)
     {
         Iterable<ScoreAnswer> foundScoreAnswers = scoreAnswerRepository.findByTaskStudentId(taskId, studentId);
@@ -102,7 +102,7 @@ public class ScoreAnswerController
         return ResponseEntity.ok(foundScoreAnswers);
     }
 
-    @GetMapping("/task_question/task/{taskId}/question/{questionId}")
+    @GetMapping("/task/{taskId}/question/{questionId}")
     public ResponseEntity<Iterable<ScoreAnswer>> listScoreAnswerByTaskQuestionId(@PathVariable Integer taskId, @PathVariable Integer questionId)
     {
         Iterable<ScoreAnswer> foundScoreAnswers = scoreAnswerRepository.findByTaskQuestionId(taskId, questionId);
@@ -114,7 +114,7 @@ public class ScoreAnswerController
         return ResponseEntity.ok(foundScoreAnswers);
     }
 
-    @GetMapping("/task_question_student/task/{taskId}/question/{questionId}/student/{studentId}")
+    @GetMapping("/task/{taskId}/question/{questionId}/student/{studentId}")
     public ResponseEntity<ScoreAnswer> listScoreAnswerByTaskQuestionStudentId(@PathVariable Integer taskId, @PathVariable Integer questionId, @PathVariable Integer studentId)
     {
         var id = new ScoreAnswerPK();
@@ -127,7 +127,7 @@ public class ScoreAnswerController
         return ResponseEntity.ok(foundScoreAnswer.get());
     }
 
-    @PutMapping("/task_question_student/task/{taskIdPath}/question/{questionIdPath}/student/{studentIdPath}")
+    @PutMapping("/task/{taskIdPath}/question/{questionIdPath}/student/{studentIdPath}")
     public ResponseEntity<ScoreAnswer> updateScoreAnswer(@RequestBody Map<String,String> scoreAnswer, @PathVariable Integer studentIdPath,
                                                @PathVariable Integer taskIdPath, @PathVariable Integer questionIdPath)
     {

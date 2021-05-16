@@ -90,7 +90,7 @@ public class AnswerController
         return ResponseEntity.created(uri).body(createdAnswer);
     }
 
-    @GetMapping("/task_student/task/{taskId}/student/{studentId}")
+    @GetMapping("/task/{taskId}/student/{studentId}")
     public ResponseEntity<Iterable<Answer>> listAnswerByTaskStudentId(@PathVariable Integer taskId, @PathVariable Integer studentId)
     {
         Iterable<Answer> foundAnswers = answerRepository.findByTaskStudentId(taskId, studentId);
@@ -102,7 +102,7 @@ public class AnswerController
         return ResponseEntity.ok(foundAnswers);
     }
 
-    @GetMapping("/task_question/task/{taskId}/question/{questionId}")
+    @GetMapping("/task/{taskId}/question/{questionId}")
     public ResponseEntity<Iterable<Answer>> listAnswerByTaskQuestionId(@PathVariable Integer taskId, @PathVariable Integer questionId)
     {
         Iterable<Answer> foundAnswers = answerRepository.findByTaskQuestionId(taskId, questionId);
@@ -114,7 +114,7 @@ public class AnswerController
         return ResponseEntity.ok(foundAnswers);
     }
 
-    @GetMapping("/task_question_student/task/{taskId}/question/{questionId}/student/{studentId}")
+    @GetMapping("/task/{taskId}/question/{questionId}/student/{studentId}")
     public ResponseEntity<Answer> listAnswerByTaskQuestionStudentId(@PathVariable Integer taskId, @PathVariable Integer questionId, @PathVariable Integer studentId)
     {
         var id = new AnswerPK();
@@ -127,7 +127,7 @@ public class AnswerController
         return ResponseEntity.ok(foundAnswer.get());
     }
 
-    @PutMapping("/task_question_student/task/{taskIdPath}/question/{questionIdPath}/student/{studentIdPath}")
+    @PutMapping("/task/{taskIdPath}/question/{questionIdPath}/student/{studentIdPath}")
     public ResponseEntity<Answer> updateAnswer(@RequestBody Map<String,String> answer, @PathVariable Integer studentIdPath,
                                                @PathVariable Integer taskIdPath, @PathVariable Integer questionIdPath)
     {
