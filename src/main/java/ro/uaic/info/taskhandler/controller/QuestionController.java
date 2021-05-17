@@ -14,14 +14,12 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/question")
-public class QuestionController
-{
+public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
 
     @PostMapping("/")
-    public ResponseEntity<Question> createQuestion(@RequestBody Question question)
-    {
+    public ResponseEntity<Question> createQuestion(@RequestBody Question question) {
         if (question.getId() != null && questionRepository.findById(question.getId()).isPresent())
             return ResponseEntity.badRequest().build();
 
@@ -33,17 +31,14 @@ public class QuestionController
     }
 
     @PostMapping("/bulk")
-    public ResponseEntity<List<ResponseEntity<Question>>> createQuestion(@RequestBody Iterable<Question> questions)
-    {
-        for (var question : questions)
-        {
+    public ResponseEntity<List<ResponseEntity<Question>>> createQuestion(@RequestBody Iterable<Question> questions) {
+        for (var question : questions) {
             if (question.getId() != null && questionRepository.findById(question.getId()).isPresent())
                 return ResponseEntity.badRequest().build();
         }
 
         List<ResponseEntity<Question>> responses = new ArrayList<>();
-        for (var question : questions)
-        {
+        for (var question : questions) {
             Question createdQuestion = questionRepository.save(question);
 
             URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -54,15 +49,13 @@ public class QuestionController
     }
 
     @GetMapping("/all")
-    public ResponseEntity<Iterable<Question>> listAllQuestions()
-    {
+    public ResponseEntity<Iterable<Question>> listAllQuestions() {
         Iterable<Question> foundQuestions = questionRepository.findAll();
         return ResponseEntity.ok(foundQuestions);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Question> listQuestion(@PathVariable Integer id)
-    {
+    public ResponseEntity<Question> listQuestion(@PathVariable Integer id) {
         Optional<Question> foundQuestion = questionRepository.findById(id);
         if (foundQuestion.isEmpty())
             return ResponseEntity.notFound().build();
@@ -70,8 +63,7 @@ public class QuestionController
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Question> updateQuestion(@RequestBody Question question, @PathVariable Integer id)
-    {
+    public ResponseEntity<Question> updateQuestion(@RequestBody Question question, @PathVariable Integer id) {
         if (question.getId() == null || !question.getId().equals(id))
             return ResponseEntity.badRequest().build();
         if (questionRepository.findById(id).isEmpty())
@@ -83,10 +75,18 @@ public class QuestionController
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Question> deleteQuestion(@PathVariable Integer id)
-    {
-        if (questionRepository.findById(id).isEmpty())
+    public ResponseEntity<Question> deleteQuestion(@PathVariable Integer id) {
+        var questionOpt = questionRepository.findById(id);
+
+        if (questionOpt.isEmpty())
             return ResponseEntity.notFound().build();
+
+        var questionObj = questionOpt.get();
+
+        if (questionObj.getQuestionTasks() != null) {
+            for (var task : questionObj.getQuestionTasks())
+                task.getTaskQuestions().remove(questionObj);
+        }
 
         questionRepository.deleteById(id);
         return ResponseEntity.noContent().build();
