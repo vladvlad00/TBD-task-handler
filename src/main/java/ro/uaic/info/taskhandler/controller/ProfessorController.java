@@ -69,8 +69,10 @@ public class ProfessorController
             return ResponseEntity.notFound().build();
 
         var professorObj = professorOpt.get();
-        for (var task : professorObj.getProfessorTasks())
-            task.getTaskProfessors().remove(professorObj);
+
+        if(professorObj.getProfessorTasks()!=null)
+            for (var task : professorObj.getProfessorTasks())
+                task.getTaskProfessors().remove(professorObj);
 
         professorRepository.deleteById(id);
         return ResponseEntity.noContent().build();

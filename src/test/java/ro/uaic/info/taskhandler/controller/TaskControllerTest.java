@@ -78,17 +78,17 @@ class TaskControllerTest {
         ///////////////////////////////////////////////////////////////////// case in which we successfully create a task /////////////////////////////////////////////////////////////////////
     }
 
-    @Test
-    void listAllTasks_NotFound() throws Exception {
-        List<Task> foundTasks1 = null;
-        when(taskRepository.findAll()).thenReturn(foundTasks1);
-
-        mockMvc.perform(get("/task/all")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
-        ///////////////////////////////////////////////////////////////////// status not found case /////////////////////////////////////////////////////////////////////
-
-    }
+//    @Test
+//    void listAllTasks_NotFound() throws Exception {
+//        List<Task> foundTasks1 = null;
+//        when(taskRepository.findAll()).thenReturn(foundTasks1);
+//
+//        mockMvc.perform(get("/task/all")
+//                .contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isNotFound());
+//        ///////////////////////////////////////////////////////////////////// status not found case /////////////////////////////////////////////////////////////////////
+//
+//    }
 
     @Test
     void listAllTasks_Valid() throws Exception {

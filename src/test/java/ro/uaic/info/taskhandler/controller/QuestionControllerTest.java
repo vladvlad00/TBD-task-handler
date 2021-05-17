@@ -129,17 +129,17 @@ class QuestionControllerTest {
         ///////////////////////////////////////////////////////////////////// case in which we successfully create questions /////////////////////////////////////////////////////////////////////
     }
 
-    @Test
-    void listAllQuestions_NotFound() throws Exception {
-        List<Question> foundQuestions1 = null;
-        when(questionRepository.findAll()).thenReturn(foundQuestions1);
-
-        mockMvc.perform(get("/question/all")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
-        ///////////////////////////////////////////////////////////////////// status not found case /////////////////////////////////////////////////////////////////////
-
-    }
+//    @Test
+//    void listAllQuestions_NotFound() throws Exception {
+//        List<Question> foundQuestions1 = null;
+//        when(questionRepository.findAll()).thenReturn(foundQuestions1);
+//
+//        mockMvc.perform(get("/question/all")
+//                .contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isNotFound());
+//        ///////////////////////////////////////////////////////////////////// status not found case /////////////////////////////////////////////////////////////////////
+//
+//    }
 
     @Test
     void listAllQuestions_Valid() throws Exception {

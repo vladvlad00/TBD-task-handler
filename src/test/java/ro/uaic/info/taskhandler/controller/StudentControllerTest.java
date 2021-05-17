@@ -74,17 +74,17 @@ class StudentControllerTest {
         // case in which we successfully create a student //
     }
 
-    @Test
-    void listAllStudents_NotFound() throws Exception {
-        List<Student> foundStudents1 = null;
-        when(studentRepository.findAll()).thenReturn(foundStudents1);
-
-        mockMvc.perform(get("/student/all")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
-        // status not found case //
-
-    }
+//    @Test
+//    void listAllStudents_NotFound() throws Exception {
+//        List<Student> foundStudents1 = null;
+//        when(studentRepository.findAll()).thenReturn(foundStudents1);
+//
+//        mockMvc.perform(get("/student/all")
+//                .contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isNotFound());
+//        // status not found case //
+//
+//    }
 
     @Test
     void listAllStudents_Valid() throws Exception {
