@@ -76,17 +76,17 @@ class ProfessorControllerTest {
         ///////////////////////////////////////////////////////////////////// case in which we successfully create a professor /////////////////////////////////////////////////////////////////////
     }
 
-    @Test
-    void listAllProfessors_NotFound() throws Exception {
-        List<Professor> foundProfessors1 = null;
-        when(professorRepository.findAll()).thenReturn(foundProfessors1);
-
-        mockMvc.perform(get("/professor/all")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
-        ///////////////////////////////////////////////////////////////////// status not found case /////////////////////////////////////////////////////////////////////
-
-    }
+//    @Test
+//    void listAllProfessors_NotFound() throws Exception {
+//        List<Professor> foundProfessors1 = null;
+//        when(professorRepository.findAll()).thenReturn(foundProfessors1);
+//
+//        mockMvc.perform(get("/professor/all")
+//                .contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isNotFound());
+//        ///////////////////////////////////////////////////////////////////// status not found case /////////////////////////////////////////////////////////////////////
+//
+//    }
 
     @Test
     void listAllProfessors_Valid() throws Exception {

@@ -33,13 +33,17 @@ public class TaskQuestionsController
             return ResponseEntity.badRequest().build();
 
         Optional<Task> taskOpt = taskRepository.findById(taskId);
-        Optional<Question> questionOpt =  questionRepository.findById(questionId);
+        Optional<Question> questionOpt = questionRepository.findById(questionId);
 
         if (taskOpt.isEmpty() || questionOpt.isEmpty())
             return ResponseEntity.badRequest().build();
 
         Task task = taskOpt.get();
         Question question = questionOpt.get();
+
+        if (task.getTaskQuestions().contains(question) &&
+            question.getQuestionTasks().contains(task))
+            return ResponseEntity.badRequest().build();
 
         task.getTaskQuestions().add(question);
         question.getQuestionTasks().add(task);
@@ -72,17 +76,11 @@ public class TaskQuestionsController
         return ResponseEntity.ok(foundTask.get().getTaskQuestions());
     }
 
-    @DeleteMapping("/")
-    public ResponseEntity<Task> deleteTask(@RequestBody Map<String, Integer> taskQuestion)
+    @DeleteMapping("/task/{taskId}/question/{questionId}")
+    public ResponseEntity<Task> deleteTask(@PathVariable Integer taskId, @PathVariable Integer questionId)
     {
-        Integer questionId = taskQuestion.get("questionId");
-        Integer taskId = taskQuestion.get("taskId");
-
-        if (taskId == null || questionId == null)
-            return ResponseEntity.badRequest().build();
-
         Optional<Task> taskOpt = taskRepository.findById(taskId);
-        Optional<Question> questionOpt =  questionRepository.findById(questionId);
+        Optional<Question> questionOpt = questionRepository.findById(questionId);
 
         if (taskOpt.isEmpty() || questionOpt.isEmpty())
             return ResponseEntity.badRequest().build();
