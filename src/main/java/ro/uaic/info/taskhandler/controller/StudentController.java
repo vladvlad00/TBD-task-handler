@@ -1,11 +1,14 @@
 package ro.uaic.info.taskhandler.controller;
 
-import ro.uaic.info.taskhandler.entity.Student;
+import ro.uaic.info.taskhandler.entity.*;
+import ro.uaic.info.taskhandler.repository.AnswerRepository;
+import ro.uaic.info.taskhandler.repository.ScoreAnswerRepository;
 import ro.uaic.info.taskhandler.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import ro.uaic.info.taskhandler.repository.TaskRegisterRepository;
 
 import java.net.URI;
 import java.util.List;
@@ -17,6 +20,15 @@ public class StudentController
 {
     @Autowired
     private StudentRepository studentRepository;
+
+    @Autowired
+    private AnswerRepository answerRepository;
+
+    @Autowired
+    private ScoreAnswerRepository scoreAnswerRepository;
+
+    @Autowired
+    private TaskRegisterRepository taskRegisterRepository;
 
     @PostMapping("/")
     public ResponseEntity<Student> createStudent(@RequestBody Student student)
@@ -35,8 +47,6 @@ public class StudentController
     public ResponseEntity<Iterable<Student>> listAllStudents()
     {
         Iterable<Student> foundStudents =studentRepository.findAll();
-        if (foundStudents == null)
-            return ResponseEntity.notFound().build();
         return ResponseEntity.ok(foundStudents);
     }
 
@@ -60,17 +70,35 @@ public class StudentController
 
         Student updatedStudent = studentRepository.save(student);
 
-        if (updatedStudent == null)
-            return ResponseEntity.notFound().build();
-
         return ResponseEntity.ok(updatedStudent);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Student> deleteStudent(@PathVariable Integer id)
     {
-        if (studentRepository.findById(id).isEmpty())
+        Optional<Student> studentOpt = studentRepository.findById(id);
+        if (studentOpt.isEmpty())
             return ResponseEntity.notFound().build();
+
+        Student student = studentOpt.get();
+
+        if(student.getStudentTasks()!=null) {
+            for (TaskRegistration taskRegistration : student.getStudentTasks()) {
+                taskRegistration.getTask().getTaskStudents().remove(taskRegistration);
+                taskRegisterRepository.deleteById(taskRegistration.getId());
+            }
+        }
+
+
+        if(student.getAnswers()!=null){
+            for(Answer answer : student.getAnswers())
+                answerRepository.deleteById(answer.getId());
+        }
+
+        if(student.getScoreAnswers()!=null){
+            for(ScoreAnswer scoreAnswer : student.getScoreAnswers())
+                scoreAnswerRepository.deleteById(scoreAnswer.getId());
+        }
 
         studentRepository.deleteById(id);
         return ResponseEntity.noContent().build();

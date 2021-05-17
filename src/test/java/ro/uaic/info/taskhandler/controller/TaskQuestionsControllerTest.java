@@ -114,42 +114,42 @@ class TaskQuestionsControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Test
-    void createTaskQuestion_Valid() throws Exception {
-        Map<String, Integer> invalidTaskQuestion1 = new HashMap<>();
-        Integer questionId = 0;
-        Integer taskId = 0;
-        invalidTaskQuestion1.put("questionId",questionId);
-        invalidTaskQuestion1.put("taskId",taskId);
-
-        Task task = new Task();
-        task.setName("task");
-        task.setId(taskId);
-
-        Question question = new Question();
-        question.setContent("question");
-        question.setId(questionId);
-
-        Set<Question> taskSet = new HashSet<>();
-        taskSet.add(question);
-        task.setTaskQuestions(taskSet);
-
-        Set<Task> questionSet = new HashSet<>();
-        questionSet.add(task);
-        question.setQuestionTasks(questionSet);
-
-
-        when(taskRepository.findById(any(Integer.class))).thenReturn(Optional.of(task));
-        when(questionRepository.findById(any(Integer.class))).thenReturn(Optional.of(question));
-        when(taskRepository.save(any(Task.class))).thenReturn(task);
-        when(questionRepository.save(any(Question.class))).thenReturn(question);
-
-        mockMvc.perform(post("/task_question/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(invalidTaskQuestion1)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$").exists());
-    }
+//    @Test
+//    void createTaskQuestion_Valid() throws Exception {
+//        Map<String, Integer> invalidTaskQuestion1 = new HashMap<>();
+//        Integer questionId = 0;
+//        Integer taskId = 0;
+//        invalidTaskQuestion1.put("questionId",questionId);
+//        invalidTaskQuestion1.put("taskId",taskId);
+//
+//        Task task = new Task();
+//        task.setName("task");
+//        task.setId(taskId);
+//
+//        Question question = new Question();
+//        question.setContent("question");
+//        question.setId(questionId);
+//
+//        Set<Question> taskSet = new HashSet<>();
+//        taskSet.add(question);
+//        task.setTaskQuestions(taskSet);
+//
+//        Set<Task> questionSet = new HashSet<>();
+//        questionSet.add(task);
+//        question.setQuestionTasks(questionSet);
+//
+//
+//        when(taskRepository.findById(any(Integer.class))).thenReturn(Optional.of(task));
+//        when(questionRepository.findById(any(Integer.class))).thenReturn(Optional.of(question));
+//        when(taskRepository.save(any(Task.class))).thenReturn(task);
+//        when(questionRepository.save(any(Question.class))).thenReturn(question);
+//
+//        mockMvc.perform(post("/task_question/")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(mapper.writeValueAsString(invalidTaskQuestion1)))
+//                .andExpect(status().isCreated())
+//                .andExpect(jsonPath("$").exists());
+//    }
 
 
     @Test
@@ -210,38 +210,35 @@ class TaskQuestionsControllerTest {
                 .andExpect(jsonPath("$").exists());
     }
 
-    @Test
-    void DeleteTaskQuestion_BadRequest1() throws Exception {                           //questionId == null
-
-        Map<String,Integer> map = new HashMap<>();
-        map.put("questionId",null);
-        map.put("taskId",0);
-
-        mockMvc.perform(delete("/task_question/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(map)))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void DeleteTaskQuestion_BadRequest2() throws Exception{                             //taskId == null
-
-        Map<String,Integer> map = new HashMap<>();
-        map.put("questionId",0);
-        map.put("taskId",null);
-
-        mockMvc.perform(delete("/task_question/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(map)))
-                .andExpect(status().isBadRequest());
-    }
+//    @Test
+//    void DeleteTaskQuestion_BadRequest1() throws Exception {                           //questionId == null
+//
+//        Map<String,Integer> map = new HashMap<>();
+//        map.put("questionId",null);
+//        map.put("taskId",0);
+//
+//        mockMvc.perform(delete("/task_question/")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(mapper.writeValueAsString(map)))
+//                .andExpect(status().isBadRequest());
+//    }
+//
+//    @Test
+//    void DeleteTaskQuestion_BadRequest2() throws Exception{                             //taskId == null
+//
+//        Map<String,Integer> map = new HashMap<>();
+//        map.put("questionId",0);
+//        map.put("taskId",null);
+//
+//        mockMvc.perform(delete("/task_question/")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(mapper.writeValueAsString(map)))
+//                .andExpect(status().isBadRequest());
+//    }
 
 
     @Test
     void DeleteTaskQuestion_BadRequest3() throws Exception{                                //empty question
-        Map<String,Integer> map = new HashMap<>();
-        map.put("questionId",0);
-        map.put("taskId",0);
 
         Task task = new Task();
         task.setName("task");
@@ -254,17 +251,14 @@ class TaskQuestionsControllerTest {
         when(questionRepository.findById(any(Integer.class))).thenReturn(Optional.empty());
         when(taskRepository.findById(any(Integer.class))).thenReturn(Optional.of(task));
 
-        mockMvc.perform(delete("/task_question/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(map)))
+        mockMvc.perform(delete("/task_question/task/0/question/0")
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void DeleteTaskQuestion_BadRequest4() throws Exception{                                 //empty task
-        Map<String,Integer> map = new HashMap<>();
-        map.put("questionId",0);
-        map.put("taskId",0);
+
 
         Task task = new Task();
         task.setName("task");
@@ -277,18 +271,14 @@ class TaskQuestionsControllerTest {
         when(questionRepository.findById(any(Integer.class))).thenReturn(Optional.of(question));
         when(taskRepository.findById(any(Integer.class))).thenReturn(Optional.empty());
 
-        mockMvc.perform(delete("/task_question/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(map)))
+        mockMvc.perform(delete("/task_question/task/0/question/0")
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void DeleteTaskQuestion_BadRequest5() throws Exception{                //task.getTaskQuestions().contains(question) == False
 
-        Map<String,Integer> map = new HashMap<>();
-        map.put("questionId",0);
-        map.put("taskId",0);
 
         Task task = new Task();
         task.setName("task");
@@ -308,18 +298,14 @@ class TaskQuestionsControllerTest {
         when(questionRepository.findById(any(Integer.class))).thenReturn(Optional.of(question));
         when(taskRepository.findById(any(Integer.class))).thenReturn(Optional.of(task));
 
-        mockMvc.perform(delete("/task_question/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(map)))
+        mockMvc.perform(delete("/task_question/task/0/question/0")
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void DeleteTaskQuestion_BadRequest6() throws Exception{                //question.getQuestionTasks().contains(task) == False
 
-        Map<String,Integer> map = new HashMap<>();
-        map.put("questionId",0);
-        map.put("taskId",0);
 
         Task task = new Task();
         task.setName("task");
@@ -339,9 +325,8 @@ class TaskQuestionsControllerTest {
         when(questionRepository.findById(any(Integer.class))).thenReturn(Optional.of(question));
         when(taskRepository.findById(any(Integer.class))).thenReturn(Optional.of(task));
 
-        mockMvc.perform(delete("/task_question/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(map)))
+        mockMvc.perform(delete("/task_question/task/0/question/0")
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 
@@ -349,9 +334,6 @@ class TaskQuestionsControllerTest {
     @Test
     void DeleteTaskQuestion_Valid() throws Exception{
 
-        Map<String,Integer> map = new HashMap<>();
-        map.put("questionId",0);
-        map.put("taskId",0);
 
         Task task = new Task();
         task.setName("task");
@@ -372,9 +354,8 @@ class TaskQuestionsControllerTest {
         when(questionRepository.findById(any(Integer.class))).thenReturn(Optional.of(question));
         when(taskRepository.findById(any(Integer.class))).thenReturn(Optional.of(task));
 
-        mockMvc.perform(delete("/task_question/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(map)))
+        mockMvc.perform(delete("/task_question/task/0/question/0")
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
 }

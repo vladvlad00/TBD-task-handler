@@ -12,11 +12,12 @@ import ro.uaic.info.taskhandler.repository.StudentRepository;
 import ro.uaic.info.taskhandler.repository.TaskRepository;
 
 import java.net.URI;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path="/answer")
+@RequestMapping(path = "/answer")
 public class AnswerController
 {
     @Autowired
@@ -32,7 +33,7 @@ public class AnswerController
     private QuestionRepository questionRepository;
 
     @PostMapping("/")
-    public ResponseEntity<Answer> createAnswer(@RequestBody Map<String,String> answer)
+    public ResponseEntity<Answer> createAnswer(@RequestBody Map<String, String> answer)
     {
         Integer studentId;
         Integer questionId;
@@ -44,13 +45,12 @@ public class AnswerController
             questionId = Integer.parseInt(answer.get("questionId"));
             taskId = Integer.parseInt(answer.get("taskId"));
             content = answer.get("content");
-        }
-        catch (Exception e)
+        } catch (Exception e)
         {
             return ResponseEntity.badRequest().build();
         }
 
-        if (studentId == null || questionId == null || taskId == null || content == null)
+        if (content == null)
             return ResponseEntity.badRequest().build();
 
         Optional<Student> studentOpt = studentRepository.findById(studentId);
@@ -64,20 +64,12 @@ public class AnswerController
         Question question = questionOpt.get();
         Task task = taskOpt.get();
 
-        AnswerPK id = new AnswerPK();
-        id.setQuestionId(questionId);
-        id.setStudentId(studentId);
-        id.setTaskId(taskId);
+        AnswerPK id = new AnswerPK(studentId, taskId, questionId);
 
         if (answerRepository.findById(id).isPresent())
             return ResponseEntity.badRequest().build();
 
-        Answer answerObj = new Answer();
-        answerObj.setId(id);
-        answerObj.setStudent(student);
-        answerObj.setQuestion(question);
-        answerObj.setTask(task);
-        answerObj.setContent(content);
+        Answer answerObj = new Answer(id, task, question, student, content);
 
         student.getAnswers().add(answerObj);
         question.getAnswers().add(answerObj);
@@ -86,51 +78,43 @@ public class AnswerController
         Answer createdAnswer = answerRepository.save(answerObj);
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}").buildAndExpand(createdAnswer.getId()).toUri();
+                .path("/task/{taskId}/question/{questionId}/student/{studentId}")
+                .buildAndExpand(questionId, taskId, studentId).toUri();
         return ResponseEntity.created(uri).body(createdAnswer);
     }
 
-    @GetMapping("/task_student/{taskId}/{studentId}")
+    @GetMapping("/task/{taskId}/student/{studentId}")
     public ResponseEntity<Iterable<Answer>> listAnswerByTaskStudentId(@PathVariable Integer taskId, @PathVariable Integer studentId)
     {
         Iterable<Answer> foundAnswers = answerRepository.findByTaskStudentId(taskId, studentId);
-        int count = 0;
-        for (var answer : foundAnswers)
-            count++;
-        if (count == 0)
+
+        if (((Collection<?>) foundAnswers).isEmpty())
             return ResponseEntity.notFound().build();
         return ResponseEntity.ok(foundAnswers);
     }
 
-    @GetMapping("/task_question/{taskId}/{questionId}")
+    @GetMapping("/task/{taskId}/question/{questionId}")
     public ResponseEntity<Iterable<Answer>> listAnswerByTaskQuestionId(@PathVariable Integer taskId, @PathVariable Integer questionId)
     {
         Iterable<Answer> foundAnswers = answerRepository.findByTaskQuestionId(taskId, questionId);
-        int count = 0;
-        for (var answer : foundAnswers)
-            count++;
-        if (count == 0)
+
+        if (((Collection<?>) foundAnswers).isEmpty())
             return ResponseEntity.notFound().build();
         return ResponseEntity.ok(foundAnswers);
     }
 
-    @GetMapping("/task_question_student/{taskId}/{questionId}/{studentId}")
-    public ResponseEntity<Answer> listAnswerByTaskQuestionStudentId(@PathVariable Integer taskId,
-                                                                              @PathVariable Integer questionId,
-                                                                              @PathVariable Integer studentId)
+    @GetMapping("/task/{taskId}/question/{questionId}/student/{studentId}")
+    public ResponseEntity<Answer> listAnswerByTaskQuestionStudentId(@PathVariable Integer taskId, @PathVariable Integer questionId, @PathVariable Integer studentId)
     {
-        var id = new AnswerPK();
-        id.setQuestionId(questionId);
-        id.setStudentId(studentId);
-        id.setTaskId(taskId);
+        var id = new AnswerPK(studentId, taskId, questionId);
         Optional<Answer> foundAnswer = answerRepository.findById(id);
         if (foundAnswer.isEmpty())
             return ResponseEntity.notFound().build();
         return ResponseEntity.ok(foundAnswer.get());
     }
 
-    @PutMapping("/{studentIdPath}/{taskIdPath}/{questionIdPath}")
-    public ResponseEntity<Answer> updateAnswer(@RequestBody Map<String,String> answer, @PathVariable Integer studentIdPath,
+    @PutMapping("/task/{taskIdPath}/question/{questionIdPath}/student/{studentIdPath}")
+    public ResponseEntity<Answer> updateAnswer(@RequestBody Map<String, String> answer, @PathVariable Integer studentIdPath,
                                                @PathVariable Integer taskIdPath, @PathVariable Integer questionIdPath)
     {
         Integer studentId;
@@ -143,20 +127,16 @@ public class AnswerController
             questionId = Integer.parseInt(answer.get("questionId"));
             taskId = Integer.parseInt(answer.get("taskId"));
             content = answer.get("content");
-        }
-        catch (Exception e)
+        } catch (Exception e)
         {
             return ResponseEntity.badRequest().build();
         }
 
-        if (studentId == null || questionId == null || taskId == null || content == null ||
-            !studentId.equals(studentIdPath) || !questionId.equals(questionIdPath) || !taskId.equals(taskIdPath))
+        if (content == null || !studentId.equals(studentIdPath) ||
+                !questionId.equals(questionIdPath) || !taskId.equals(taskIdPath))
             return ResponseEntity.badRequest().build();
 
-        AnswerPK id = new AnswerPK();
-        id.setTaskId(taskId);
-        id.setStudentId(studentId);
-        id.setQuestionId(questionId);
+        AnswerPK id = new AnswerPK(studentId, taskId, questionId);
         Optional<Answer> answerOpt = answerRepository.findById(id);
         if (answerOpt.isEmpty())
             return ResponseEntity.notFound().build();
@@ -165,9 +145,6 @@ public class AnswerController
         answerObj.setContent(content);
 
         Answer updatedAnswer = answerRepository.save(answerObj);
-
-        if (updatedAnswer == null)
-            return ResponseEntity.notFound().build();
 
         return ResponseEntity.ok(updatedAnswer);
     }

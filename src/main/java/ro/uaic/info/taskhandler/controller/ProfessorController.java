@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path="/professor")
+@RequestMapping(path = "/professor")
 public class ProfessorController
 {
     @Autowired
@@ -34,9 +34,7 @@ public class ProfessorController
     @GetMapping("/all")
     public ResponseEntity<Iterable<Professor>> listAllProfessors()
     {
-        Iterable<Professor> foundProfessors =professorRepository.findAll();
-        if (foundProfessors == null)
-            return ResponseEntity.notFound().build();
+        Iterable<Professor> foundProfessors = professorRepository.findAll();
         return ResponseEntity.ok(foundProfessors);
     }
 
@@ -60,17 +58,21 @@ public class ProfessorController
 
         Professor updatedProfessor = professorRepository.save(professor);
 
-        if (updatedProfessor == null)
-            return ResponseEntity.notFound().build();
-
         return ResponseEntity.ok(updatedProfessor);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Professor> deleteProfessor(@PathVariable Integer id)
     {
-        if (professorRepository.findById(id).isEmpty())
+        var professorOpt = professorRepository.findById(id);
+        if (professorOpt.isEmpty())
             return ResponseEntity.notFound().build();
+
+        var professorObj = professorOpt.get();
+
+        if(professorObj.getProfessorTasks()!=null)
+            for (var task : professorObj.getProfessorTasks())
+                task.getTaskProfessors().remove(professorObj);
 
         professorRepository.deleteById(id);
         return ResponseEntity.noContent().build();

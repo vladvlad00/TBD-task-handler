@@ -43,23 +43,33 @@ public class Question
     @OneToMany(mappedBy = "question")
     private List<ScoreAnswer> scoreAnswers;
 
-    public List<ScoreAnswer> getScoreAnswers() { return scoreAnswers; }
+    public List<ScoreAnswer> getScoreAnswers()
+    {
+        return scoreAnswers;
+    }
 
-    public void setScoreAnswers(List<ScoreAnswer> scoreAnswers) { this.scoreAnswers = scoreAnswers; }
+    public void setScoreAnswers(List<ScoreAnswer> scoreAnswers)
+    {
+        this.scoreAnswers = scoreAnswers;
+    }
 
-    public String getQuestionType() {
+    public String getQuestionType()
+    {
         return questionType;
     }
 
-    public void setQuestionType(String questionType) {
+    public void setQuestionType(String questionType)
+    {
         this.questionType = questionType;
     }
 
-    public void setMaxPoints(Integer maxPoints) {
+    public void setMaxPoints(Integer maxPoints)
+    {
         this.maxPoints = maxPoints;
     }
 
-    public Integer getMaxPoints() {
+    public Integer getMaxPoints()
+    {
         return maxPoints;
     }
 

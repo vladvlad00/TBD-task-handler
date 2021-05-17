@@ -14,10 +14,11 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/task_student")
-public class TaskStudentController {
+public class TaskStudentController
+{
     @Autowired
     private TaskRepository taskRepository;
-    
+
     @Autowired
     private StudentRepository studentRepository;
 
@@ -34,7 +35,7 @@ public class TaskStudentController {
             return ResponseEntity.badRequest().build();
 
         Optional<Task> taskOpt = taskRepository.findById(taskId);
-        Optional<Student> studentOpt =  studentRepository.findById(studentId);
+        Optional<Student> studentOpt = studentRepository.findById(studentId);
 
         if (taskOpt.isEmpty() || studentOpt.isEmpty())
             return ResponseEntity.badRequest().build();
@@ -42,15 +43,12 @@ public class TaskStudentController {
         Task task = taskOpt.get();
         Student student = studentOpt.get();
 
-        var register=new TaskRegistration();
-        var id=new TaskRegistrationPK();
-        id.setStudentId(studentId);
-        id.setTaskId(taskId);
+        var id = new TaskRegistrationPK(studentId, taskId);
 
-        register.setId(id);
-        register.setStudent(student);
-        register.setTask(task);
-        register.setStatus("not started");
+        if (taskRegisterRepository.findByTaskIdAndStudentId(taskId, studentId).isPresent())
+            return ResponseEntity.badRequest().build();
+
+        var register = new TaskRegistration(id, student, task, "not started");
 
         task.getTaskStudents().add(register);
         student.getStudentTasks().add(register);
@@ -66,93 +64,92 @@ public class TaskStudentController {
     }
 
     @GetMapping("/student/{id}")
-    public ResponseEntity<List<Map<String,Object>>> listByStudentId(@PathVariable Integer id)
+    public ResponseEntity<List<Map<String, Object>>> listByStudentId(@PathVariable Integer id)
     {
         Optional<Student> foundStudent = studentRepository.findById(id);
         if (foundStudent.isEmpty())
             return ResponseEntity.notFound().build();
 
-        var aux=foundStudent.get().getStudentTasks();
-        var ans=new ArrayList<Map<String,Object>>();
-        for(var element:aux){
-            var map=new HashMap<String,Object>();
-            map.put("task",element.getTask());
-            map.put("status",element.getStatus());
+        var aux = foundStudent.get().getStudentTasks();
+        var ans = new ArrayList<Map<String, Object>>();
+        for (var element : aux)
+        {
+            var map = new HashMap<String, Object>();
+            map.put("task", element.getTask());
+            map.put("status", element.getStatus());
             ans.add(map);
         }
         return ResponseEntity.ok(ans);
     }
 
     @GetMapping("/task/{id}")
-    public ResponseEntity<List<Map<String,Object>>> listByTaskId(@PathVariable Integer id)
+    public ResponseEntity<List<Map<String, Object>>> listByTaskId(@PathVariable Integer id)
     {
         Optional<Task> foundTask = taskRepository.findById(id);
         if (foundTask.isEmpty())
             return ResponseEntity.notFound().build();
 
-        var aux=foundTask.get().getTaskStudents();
-        var ans=new ArrayList<Map<String,Object>>();
-        for(var element:aux){
-            var map=new HashMap<String,Object>();
-            map.put("student",element.getStudent());
-            map.put("status",element.getStatus());
+        var aux = foundTask.get().getTaskStudents();
+        var ans = new ArrayList<Map<String, Object>>();
+        for (var element : aux)
+        {
+            var map = new HashMap<String, Object>();
+            map.put("student", element.getStudent());
+            map.put("status", element.getStatus());
             ans.add(map);
         }
         return ResponseEntity.ok(ans);
     }
 
-    @GetMapping("/{taskId}/{studentId}")
-    public ResponseEntity<TaskRegistration> listTaskAssignedToStudent(@PathVariable Integer taskId,@PathVariable Integer studentId){
-        Optional<TaskRegistration> found=taskRegisterRepository.findByTaskIdAndStudentId(taskId,studentId);
+    @GetMapping("/task/{taskId}/student/{studentId}")
+    public ResponseEntity<TaskRegistration> listTaskAssignedToStudent(@PathVariable Integer taskId, @PathVariable Integer studentId)
+    {
+        Optional<TaskRegistration> found = taskRegisterRepository.findByTaskIdAndStudentId(taskId, studentId);
         if (found.isEmpty())
             return ResponseEntity.notFound().build();
         return ResponseEntity.ok(found.get());
     }
 
-    @PutMapping("/{taskId}/{studentId}")
-    public ResponseEntity<TaskRegistration> updateTask(@PathVariable Integer taskId,@PathVariable Integer studentId)
+    @PutMapping("/task/{taskId}/student/{studentId}")
+    public ResponseEntity<TaskRegistration> updateTask(@PathVariable Integer taskId, @PathVariable Integer studentId)
     {
 
-        Optional<TaskRegistration> found=taskRegisterRepository.findByTaskIdAndStudentId(taskId,studentId);
+        Optional<TaskRegistration> found = taskRegisterRepository.findByTaskIdAndStudentId(taskId, studentId);
         if (found.isEmpty())
             return ResponseEntity.notFound().build();
 
-        if(found.get().getStatus().equals("not started")){
+        if (found.get().getStatus().equals("not started"))
+        {
             found.get().setStatus("started");
-            TaskRegistration updatedTask= taskRegisterRepository.save(found.get());
-            if(updatedTask==null)
-                return ResponseEntity.notFound().build();
+            TaskRegistration updatedTask = taskRegisterRepository.save(found.get());
             return ResponseEntity.ok(updatedTask);
-        }
-        else
-            return  ResponseEntity.badRequest().build();
+        } else
+            return ResponseEntity.badRequest().build();
 
     }
 
 
-    @DeleteMapping("/")
-    public ResponseEntity<Task> deleteTask(@RequestBody Map<String, Integer> taskStudent)
+    @DeleteMapping("/task/{taskId}/student/{studentId}")
+    public ResponseEntity<Task> deleteTask(@PathVariable Integer taskId, @PathVariable Integer studentId)
     {
-        Integer studentId = taskStudent.get("studentId");
-        Integer taskId = taskStudent.get("taskId");
 
         if (taskId == null || studentId == null)
             return ResponseEntity.badRequest().build();
 
-        Optional<TaskRegistration> taskRegistrationOpt = taskRegisterRepository.findById(new TaskRegistrationPK(studentId,taskId));
+        Optional<TaskRegistration> taskRegistrationOpt = taskRegisterRepository.findById(new TaskRegistrationPK(studentId, taskId));
 
         if (taskRegistrationOpt.isEmpty())
             return ResponseEntity.badRequest().build();
 
-        Optional<Task> taskOpt=taskRepository.findById(taskId);
-        Optional<Student>studentOpt=studentRepository.findById(studentId);
+        Optional<Task> taskOpt = taskRepository.findById(taskId);
+        Optional<Student> studentOpt = studentRepository.findById(studentId);
 
         if (taskOpt.isEmpty() || studentOpt.isEmpty())
             return ResponseEntity.badRequest().build();
 
-        TaskRegistration taskRegistration=taskRegistrationOpt.get();
-        Task task=taskOpt.get();
-        Student student=studentOpt.get();
+        TaskRegistration taskRegistration = taskRegistrationOpt.get();
+        Task task = taskOpt.get();
+        Student student = studentOpt.get();
 
         if (!task.getTaskStudents().contains(taskRegistration) || !student.getStudentTasks().contains(taskRegistration))
             return ResponseEntity.notFound().build();
@@ -163,7 +160,7 @@ public class TaskStudentController {
         taskRepository.save(task);
         studentRepository.save(student);
 
-        taskRegisterRepository.deleteById(new TaskRegistrationPK(studentId,taskId));
+        taskRegisterRepository.deleteById(new TaskRegistrationPK(studentId, taskId));
 
         return ResponseEntity.noContent().build();
     }

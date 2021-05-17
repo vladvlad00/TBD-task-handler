@@ -29,9 +29,28 @@ public class ScoreAnswer
 
     private Integer scoreValue;
 
-    public ScoreAnswerPK getId() { return id; }
+    public ScoreAnswer()
+    {
+    }
 
-    public void setId(ScoreAnswerPK id) { this.id = id; }
+    public ScoreAnswer(ScoreAnswerPK id, Task task, Question question, Student student, Integer scoreValue)
+    {
+        this.id = id;
+        this.task = task;
+        this.question = question;
+        this.student = student;
+        this.scoreValue = scoreValue;
+    }
+
+    public ScoreAnswerPK getId()
+    {
+        return id;
+    }
+
+    public void setId(ScoreAnswerPK id)
+    {
+        this.id = id;
+    }
 
     public Task getTask()
     {
@@ -63,7 +82,13 @@ public class ScoreAnswer
         this.student = student;
     }
 
-    public Integer getScoreValue() { return scoreValue; }
+    public Integer getScoreValue()
+    {
+        return scoreValue;
+    }
 
-    public void setScoreValue(Integer scoreValue) { this.scoreValue = scoreValue; }
+    public void setScoreValue(Integer scoreValue)
+    {
+        this.scoreValue = scoreValue;
+    }
 }

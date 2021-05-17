@@ -33,13 +33,17 @@ public class TaskProfessorsController
             return ResponseEntity.badRequest().build();
 
         Optional<Task> taskOpt = taskRepository.findById(taskId);
-        Optional<Professor> professorOpt =  professorRepository.findById(professorId);
+        Optional<Professor> professorOpt = professorRepository.findById(professorId);
 
         if (taskOpt.isEmpty() || professorOpt.isEmpty())
             return ResponseEntity.badRequest().build();
 
         Task task = taskOpt.get();
         Professor professor = professorOpt.get();
+
+        if (task.getTaskProfessors().contains(professor) &&
+            professor.getProfessorTasks().contains(task))
+            return ResponseEntity.badRequest().build();
 
         task.getTaskProfessors().add(professor);
         professor.getProfessorTasks().add(task);
@@ -72,17 +76,11 @@ public class TaskProfessorsController
         return ResponseEntity.ok(foundTask.get().getTaskProfessors());
     }
 
-    @DeleteMapping("/")
-    public ResponseEntity<Task> deleteTask(@RequestBody Map<String, Integer> taskProfessor)
+    @DeleteMapping("/task/{taskId}/professor/{professorId}")
+    public ResponseEntity<Task> deleteTask(@PathVariable Integer taskId, @PathVariable Integer professorId)
     {
-        Integer professorId = taskProfessor.get("professorId");
-        Integer taskId = taskProfessor.get("taskId");
-
-        if (taskId == null || professorId == null)
-            return ResponseEntity.badRequest().build();
-
         Optional<Task> taskOpt = taskRepository.findById(taskId);
-        Optional<Professor> professorOpt =  professorRepository.findById(professorId);
+        Optional<Professor> professorOpt = professorRepository.findById(professorId);
 
         if (taskOpt.isEmpty() || professorOpt.isEmpty())
             return ResponseEntity.badRequest().build();

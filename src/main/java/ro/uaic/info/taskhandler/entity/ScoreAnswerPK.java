@@ -10,6 +10,17 @@ public class ScoreAnswerPK implements Serializable
     private Integer taskId;
     private Integer questionId;
 
+    public ScoreAnswerPK()
+    {
+    }
+
+    public ScoreAnswerPK(Integer studentId, Integer taskId, Integer questionId)
+    {
+        this.studentId = studentId;
+        this.taskId = taskId;
+        this.questionId = questionId;
+    }
+
     public Integer getStudentId()
     {
         return studentId;
