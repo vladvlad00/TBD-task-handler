@@ -44,6 +44,10 @@ public class TaskStudentController
         Student student = studentOpt.get();
 
         var id = new TaskRegistrationPK(studentId, taskId);
+
+        if (taskRegisterRepository.findByTaskIdAndStudentId(taskId, studentId).isPresent())
+            return ResponseEntity.badRequest().build();
+
         var register = new TaskRegistration(id, student, task, "not started");
 
         task.getTaskStudents().add(register);

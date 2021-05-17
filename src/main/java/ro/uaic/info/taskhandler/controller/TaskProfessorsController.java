@@ -41,6 +41,10 @@ public class TaskProfessorsController
         Task task = taskOpt.get();
         Professor professor = professorOpt.get();
 
+        if (task.getTaskProfessors().contains(professor) &&
+            professor.getProfessorTasks().contains(task))
+            return ResponseEntity.badRequest().build();
+
         task.getTaskProfessors().add(professor);
         professor.getProfessorTasks().add(task);
 
