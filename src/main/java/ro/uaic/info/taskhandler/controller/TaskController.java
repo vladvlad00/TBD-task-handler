@@ -7,6 +7,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ro.uaic.info.taskhandler.entity.Task;
 import ro.uaic.info.taskhandler.repository.AnswerRepository;
 import ro.uaic.info.taskhandler.repository.ScoreAnswerRepository;
+import ro.uaic.info.taskhandler.repository.TaskRegisterRepository;
 import ro.uaic.info.taskhandler.repository.TaskRepository;
 
 import java.net.URI;
@@ -24,6 +25,9 @@ public class TaskController
 
     @Autowired
     private ScoreAnswerRepository scoreAnswerRepository;
+
+    @Autowired
+    private TaskRegisterRepository taskRegisterRepository;
 
     @PostMapping("/")
     public ResponseEntity<Task> createTask(@RequestBody Task task)
@@ -81,6 +85,21 @@ public class TaskController
         {
             for (var professor : taskObj.getTaskProfessors())
                 professor.getProfessorTasks().remove(taskObj);
+        }
+
+        if (taskObj.getTaskQuestions() != null)
+        {
+            for (var question : taskObj.getTaskQuestions())
+                question.getQuestionTasks().remove(taskObj);
+        }
+
+        if (taskObj.getTaskStudents() != null)
+        {
+            for (var registration : taskObj.getTaskStudents())
+            {
+                registration.getStudent().getStudentTasks().remove(registration);
+                taskRegisterRepository.deleteById(registration.getId());
+            }
         }
 
         if (taskObj.getAnswers() != null)
