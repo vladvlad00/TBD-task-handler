@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import ro.uaic.info.taskhandler.repository.TaskRegisterRepository;
 
 import java.net.URI;
 import java.util.List;
@@ -25,6 +26,9 @@ public class StudentController
 
     @Autowired
     private ScoreAnswerRepository scoreAnswerRepository;
+
+    @Autowired
+    private TaskRegisterRepository taskRegisterRepository;
 
     @PostMapping("/")
     public ResponseEntity<Student> createStudent(@RequestBody Student student)
@@ -81,8 +85,8 @@ public class StudentController
         if(student.getStudentTasks()!=null) {
             for (TaskRegistration taskRegistration : student.getStudentTasks()) {
                 taskRegistration.getTask().getTaskStudents().remove(taskRegistration);
+                taskRegisterRepository.deleteById(taskRegistration.getId());
             }
-            //student.getStudentTasks().removeAll(student.getStudentTasks());
         }
 
 
