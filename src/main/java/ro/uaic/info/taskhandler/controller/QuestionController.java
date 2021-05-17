@@ -77,7 +77,6 @@ public class QuestionController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Question> deleteQuestion(@PathVariable Integer id) {
         var questionOpt = questionRepository.findById(id);
-
         if (questionOpt.isEmpty())
             return ResponseEntity.notFound().build();
 
