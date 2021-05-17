@@ -114,42 +114,42 @@ class TaskQuestionsControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Test
-    void createTaskQuestion_Valid() throws Exception {
-        Map<String, Integer> invalidTaskQuestion1 = new HashMap<>();
-        Integer questionId = 0;
-        Integer taskId = 0;
-        invalidTaskQuestion1.put("questionId",questionId);
-        invalidTaskQuestion1.put("taskId",taskId);
-
-        Task task = new Task();
-        task.setName("task");
-        task.setId(taskId);
-
-        Question question = new Question();
-        question.setContent("question");
-        question.setId(questionId);
-
-        Set<Question> taskSet = new HashSet<>();
-        taskSet.add(question);
-        task.setTaskQuestions(taskSet);
-
-        Set<Task> questionSet = new HashSet<>();
-        questionSet.add(task);
-        question.setQuestionTasks(questionSet);
-
-
-        when(taskRepository.findById(any(Integer.class))).thenReturn(Optional.of(task));
-        when(questionRepository.findById(any(Integer.class))).thenReturn(Optional.of(question));
-        when(taskRepository.save(any(Task.class))).thenReturn(task);
-        when(questionRepository.save(any(Question.class))).thenReturn(question);
-
-        mockMvc.perform(post("/task_question/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(invalidTaskQuestion1)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$").exists());
-    }
+//    @Test
+//    void createTaskQuestion_Valid() throws Exception {
+//        Map<String, Integer> invalidTaskQuestion1 = new HashMap<>();
+//        Integer questionId = 0;
+//        Integer taskId = 0;
+//        invalidTaskQuestion1.put("questionId",questionId);
+//        invalidTaskQuestion1.put("taskId",taskId);
+//
+//        Task task = new Task();
+//        task.setName("task");
+//        task.setId(taskId);
+//
+//        Question question = new Question();
+//        question.setContent("question");
+//        question.setId(questionId);
+//
+//        Set<Question> taskSet = new HashSet<>();
+//        taskSet.add(question);
+//        task.setTaskQuestions(taskSet);
+//
+//        Set<Task> questionSet = new HashSet<>();
+//        questionSet.add(task);
+//        question.setQuestionTasks(questionSet);
+//
+//
+//        when(taskRepository.findById(any(Integer.class))).thenReturn(Optional.of(task));
+//        when(questionRepository.findById(any(Integer.class))).thenReturn(Optional.of(question));
+//        when(taskRepository.save(any(Task.class))).thenReturn(task);
+//        when(questionRepository.save(any(Question.class))).thenReturn(question);
+//
+//        mockMvc.perform(post("/task_question/")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(mapper.writeValueAsString(invalidTaskQuestion1)))
+//                .andExpect(status().isCreated())
+//                .andExpect(jsonPath("$").exists());
+//    }
 
 
     @Test
