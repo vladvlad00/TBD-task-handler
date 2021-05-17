@@ -41,6 +41,10 @@ public class TaskQuestionsController
         Task task = taskOpt.get();
         Question question = questionOpt.get();
 
+        if (task.getTaskQuestions().contains(question) &&
+            question.getQuestionTasks().add(task))
+            return ResponseEntity.badRequest().build();
+
         task.getTaskQuestions().add(question);
         question.getQuestionTasks().add(task);
 
