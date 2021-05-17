@@ -1,6 +1,8 @@
 package ro.uaic.info.taskhandler.controller;
 
-import ro.uaic.info.taskhandler.entity.Student;
+import ro.uaic.info.taskhandler.entity.*;
+import ro.uaic.info.taskhandler.repository.AnswerRepository;
+import ro.uaic.info.taskhandler.repository.ScoreAnswerRepository;
 import ro.uaic.info.taskhandler.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,12 @@ public class StudentController
 {
     @Autowired
     private StudentRepository studentRepository;
+
+    @Autowired
+    private AnswerRepository answerRepository;
+
+    @Autowired
+    private ScoreAnswerRepository scoreAnswerRepository;
 
     @PostMapping("/")
     public ResponseEntity<Student> createStudent(@RequestBody Student student)
@@ -64,8 +72,29 @@ public class StudentController
     @DeleteMapping("/{id}")
     public ResponseEntity<Student> deleteStudent(@PathVariable Integer id)
     {
-        if (studentRepository.findById(id).isEmpty())
+        Optional<Student> studentOpt = studentRepository.findById(id);
+        if (studentOpt.isEmpty())
             return ResponseEntity.notFound().build();
+
+        Student student = studentOpt.get();
+
+        if(student.getStudentTasks()!=null) {
+            for (TaskRegistration taskRegistration : student.getStudentTasks()) {
+                taskRegistration.getTask().getTaskStudents().remove(taskRegistration);
+            }
+            //student.getStudentTasks().removeAll(student.getStudentTasks());
+        }
+
+
+        if(student.getAnswers()!=null){
+            for(Answer answer : student.getAnswers())
+                answerRepository.deleteById(answer.getId());
+        }
+
+        if(student.getScoreAnswers()!=null){
+            for(ScoreAnswer scoreAnswer : student.getScoreAnswers())
+                scoreAnswerRepository.deleteById(scoreAnswer.getId());
+        }
 
         studentRepository.deleteById(id);
         return ResponseEntity.noContent().build();
