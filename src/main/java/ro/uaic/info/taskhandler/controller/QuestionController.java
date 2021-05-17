@@ -5,7 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ro.uaic.info.taskhandler.entity.Question;
+import ro.uaic.info.taskhandler.repository.AnswerRepository;
 import ro.uaic.info.taskhandler.repository.QuestionRepository;
+import ro.uaic.info.taskhandler.repository.ScoreAnswerRepository;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -17,6 +19,12 @@ import java.util.Optional;
 public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private AnswerRepository answerRepository;
+
+    @Autowired
+    private ScoreAnswerRepository scoreAnswerRepository;
 
     @PostMapping("/")
     public ResponseEntity<Question> createQuestion(@RequestBody Question question) {
@@ -85,6 +93,16 @@ public class QuestionController {
         if (questionObj.getQuestionTasks() != null) {
             for (var task : questionObj.getQuestionTasks())
                 task.getTaskQuestions().remove(questionObj);
+        }
+
+        if (questionObj.getAnswers() != null) {
+            for (var answer : questionObj.getAnswers())
+                answerRepository.deleteById(answer.getId());
+        }
+
+        if (questionObj.getScoreAnswers() != null) {
+            for (var scoreAnswer : questionObj.getScoreAnswers())
+                scoreAnswerRepository.deleteById(scoreAnswer.getId());
         }
 
         questionRepository.deleteById(id);
