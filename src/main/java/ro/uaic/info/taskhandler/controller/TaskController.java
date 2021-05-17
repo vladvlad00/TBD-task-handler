@@ -5,6 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ro.uaic.info.taskhandler.entity.Task;
+import ro.uaic.info.taskhandler.repository.AnswerRepository;
+import ro.uaic.info.taskhandler.repository.ScoreAnswerRepository;
 import ro.uaic.info.taskhandler.repository.TaskRepository;
 
 import java.net.URI;
@@ -16,6 +18,12 @@ public class TaskController
 {
     @Autowired
     private TaskRepository taskRepository;
+
+    @Autowired
+    private AnswerRepository answerRepository;
+
+    @Autowired
+    private ScoreAnswerRepository scoreAnswerRepository;
 
     @PostMapping("/")
     public ResponseEntity<Task> createTask(@RequestBody Task task)
@@ -62,8 +70,30 @@ public class TaskController
     @DeleteMapping("/{id}")
     public ResponseEntity<Task> deleteTask(@PathVariable Integer id)
     {
-        if (taskRepository.findById(id).isEmpty())
+        Optional<Task> taskOpt = taskRepository.findById(id);
+
+        if (taskOpt.isEmpty())
             return ResponseEntity.notFound().build();
+
+        Task taskObj = taskOpt.get();
+
+        if (taskObj.getTaskProfessors() != null)
+        {
+            for (var professor : taskObj.getTaskProfessors())
+                professor.getProfessorTasks().remove(taskObj);
+        }
+
+        if (taskObj.getAnswers() != null)
+        {
+            for (var answer : taskObj.getAnswers())
+                answerRepository.deleteById(answer.getId());
+        }
+
+        if (taskObj.getScoreAnswers() != null)
+        {
+            for (var score : taskObj.getScoreAnswers())
+                scoreAnswerRepository.deleteById(score.getId());
+        }
 
         taskRepository.deleteById(id);
         return ResponseEntity.noContent().build();
