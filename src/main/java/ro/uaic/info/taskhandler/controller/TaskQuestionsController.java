@@ -72,8 +72,20 @@ public class TaskQuestionsController
         Optional<Task> foundTask = taskRepository.findById(id);
         if (foundTask.isEmpty())
             return ResponseEntity.notFound().build();
-
         return ResponseEntity.ok(foundTask.get().getTaskQuestions());
+    }
+
+    @GetMapping("/task/{id}/no_answer")
+    public ResponseEntity<Iterable<Question>> listByTaskIdNoAnswer(@PathVariable Integer id)
+    {
+        Optional<Task> foundTask = taskRepository.findById(id);
+        if (foundTask.isEmpty())
+            return ResponseEntity.notFound().build();
+        var questions=foundTask.get().getTaskQuestions();
+        for(var question:questions){
+            question.setCorrectAnswer(null);
+        }
+        return ResponseEntity.ok(questions);
     }
 
     @DeleteMapping("/task/{taskId}/question/{questionId}")
