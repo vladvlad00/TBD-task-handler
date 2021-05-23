@@ -5,7 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ro.uaic.info.taskhandler.entity.Question;
+import ro.uaic.info.taskhandler.repository.AnswerRepository;
 import ro.uaic.info.taskhandler.repository.QuestionRepository;
+import ro.uaic.info.taskhandler.repository.ScoreAnswerRepository;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -14,14 +16,18 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/question")
-public class QuestionController
-{
+public class QuestionController {
     @Autowired
     private QuestionRepository questionRepository;
 
+    @Autowired
+    private AnswerRepository answerRepository;
+
+    @Autowired
+    private ScoreAnswerRepository scoreAnswerRepository;
+
     @PostMapping("/")
-    public ResponseEntity<Question> createQuestion(@RequestBody Question question)
-    {
+    public ResponseEntity<Question> createQuestion(@RequestBody Question question) {
         if (question.getId() != null && questionRepository.findById(question.getId()).isPresent())
             return ResponseEntity.badRequest().build();
 
@@ -33,17 +39,14 @@ public class QuestionController
     }
 
     @PostMapping("/bulk")
-    public ResponseEntity<List<ResponseEntity<Question>>> createQuestion(@RequestBody Iterable<Question> questions)
-    {
-        for (var question : questions)
-        {
+    public ResponseEntity<List<ResponseEntity<Question>>> createQuestion(@RequestBody Iterable<Question> questions) {
+        for (var question : questions) {
             if (question.getId() != null && questionRepository.findById(question.getId()).isPresent())
                 return ResponseEntity.badRequest().build();
         }
 
         List<ResponseEntity<Question>> responses = new ArrayList<>();
-        for (var question : questions)
-        {
+        for (var question : questions) {
             Question createdQuestion = questionRepository.save(question);
 
             URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -54,8 +57,7 @@ public class QuestionController
     }
 
     @GetMapping("/all")
-    public ResponseEntity<Iterable<Question>> listAllQuestions()
-    {
+    public ResponseEntity<Iterable<Question>> listAllQuestions() {
         Iterable<Question> foundQuestions = questionRepository.findAll();
         return ResponseEntity.ok(foundQuestions);
     }
@@ -71,8 +73,7 @@ public class QuestionController
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Question> listQuestion(@PathVariable Integer id)
-    {
+    public ResponseEntity<Question> listQuestion(@PathVariable Integer id) {
         Optional<Question> foundQuestion = questionRepository.findById(id);
         if (foundQuestion.isEmpty())
             return ResponseEntity.notFound().build();
@@ -80,8 +81,7 @@ public class QuestionController
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Question> updateQuestion(@RequestBody Question question, @PathVariable Integer id)
-    {
+    public ResponseEntity<Question> updateQuestion(@RequestBody Question question, @PathVariable Integer id) {
         if (question.getId() == null || !question.getId().equals(id))
             return ResponseEntity.badRequest().build();
         if (questionRepository.findById(id).isEmpty())
@@ -93,10 +93,27 @@ public class QuestionController
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Question> deleteQuestion(@PathVariable Integer id)
-    {
-        if (questionRepository.findById(id).isEmpty())
+    public ResponseEntity<Question> deleteQuestion(@PathVariable Integer id) {
+        var questionOpt = questionRepository.findById(id);
+        if (questionOpt.isEmpty())
             return ResponseEntity.notFound().build();
+
+        var questionObj = questionOpt.get();
+
+        if (questionObj.getQuestionTasks() != null) {
+            for (var task : questionObj.getQuestionTasks())
+                task.getTaskQuestions().remove(questionObj);
+        }
+
+        if (questionObj.getAnswers() != null) {
+            for (var answer : questionObj.getAnswers())
+                answerRepository.deleteById(answer.getId());
+        }
+
+        if (questionObj.getScoreAnswers() != null) {
+            for (var scoreAnswer : questionObj.getScoreAnswers())
+                scoreAnswerRepository.deleteById(scoreAnswer.getId());
+        }
 
         questionRepository.deleteById(id);
         return ResponseEntity.noContent().build();
