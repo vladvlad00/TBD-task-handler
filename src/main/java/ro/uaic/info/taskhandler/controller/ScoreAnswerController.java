@@ -108,9 +108,8 @@ public class ScoreAnswerController
         return ResponseEntity.ok(foundScoreAnswer.get());
     }
 
-    @PutMapping("/task/{taskIdPath}/question/{questionIdPath}/student/{studentIdPath}")
-    public ResponseEntity<ScoreAnswer> updateScoreAnswer(@RequestBody Map<String, String> scoreAnswer, @PathVariable Integer studentIdPath,
-                                                         @PathVariable Integer taskIdPath, @PathVariable Integer questionIdPath)
+    @PutMapping("/")
+    public ResponseEntity<ScoreAnswer> updateScoreAnswer(@RequestBody Map<String, String> scoreAnswer)
     {
         Integer studentId;
         Integer questionId;
@@ -126,9 +125,6 @@ public class ScoreAnswerController
         {
             return ResponseEntity.badRequest().build();
         }
-
-        if (!studentId.equals(studentIdPath) || !questionId.equals(questionIdPath) || !taskId.equals(taskIdPath))
-            return ResponseEntity.badRequest().build();
 
         ScoreAnswerPK id = new ScoreAnswerPK(studentId, taskId, questionId);
         Optional<ScoreAnswer> scoreAnswerOpt = scoreAnswerRepository.findById(id);
