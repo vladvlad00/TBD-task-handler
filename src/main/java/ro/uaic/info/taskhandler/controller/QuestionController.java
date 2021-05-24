@@ -62,6 +62,16 @@ public class QuestionController {
         return ResponseEntity.ok(foundQuestions);
     }
 
+    @GetMapping("/all_no_answer")
+    public ResponseEntity<Iterable<Question>> listAllQuestionsNoAnswer()
+    {
+        Iterable<Question> foundQuestions = questionRepository.findAll();
+        for(var question:foundQuestions){
+            question.setCorrectAnswer(null);
+        }
+        return ResponseEntity.ok(foundQuestions);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Question> listQuestion(@PathVariable Integer id) {
         Optional<Question> foundQuestion = questionRepository.findById(id);

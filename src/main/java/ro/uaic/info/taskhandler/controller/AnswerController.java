@@ -113,9 +113,8 @@ public class AnswerController
         return ResponseEntity.ok(foundAnswer.get());
     }
 
-    @PutMapping("/task/{taskIdPath}/question/{questionIdPath}/student/{studentIdPath}")
-    public ResponseEntity<Answer> updateAnswer(@RequestBody Map<String, String> answer, @PathVariable Integer studentIdPath,
-                                               @PathVariable Integer taskIdPath, @PathVariable Integer questionIdPath)
+    @PutMapping("/")
+    public ResponseEntity<Answer> updateAnswer(@RequestBody Map<String, String> answer)
     {
         Integer studentId;
         Integer questionId;
@@ -131,10 +130,6 @@ public class AnswerController
         {
             return ResponseEntity.badRequest().build();
         }
-
-        if (content == null || !studentId.equals(studentIdPath) ||
-                !questionId.equals(questionIdPath) || !taskId.equals(taskIdPath))
-            return ResponseEntity.badRequest().build();
 
         AnswerPK id = new AnswerPK(studentId, taskId, questionId);
         Optional<Answer> answerOpt = answerRepository.findById(id);
